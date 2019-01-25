@@ -1,0 +1,41 @@
+
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{blindtext}
+\usepackage{extsizes}
+\usepackage[left=2cm,right=2cm,top= 3cm]{geometry}
+
+\usepackage{tikz}
+\usepackage{tikz-timing}
+\usetikzlibrary{shadows.blur}
+
+\renewcommand\thesubsection{\alph{subsection})}
+
+\newcommand{\makeanswerbox}[1]{
+	\def\x{#1}
+	\noindent
+	\begin{tikzpicture}
+		\draw[blur shadow={shadow blur steps=10},fill = white] (0,0) rectangle (\textwidth,\x);
+	\end{tikzpicture}
+}
+
+\newcommand{\makecustomanswerbox}[2]{
+	\def\x{#1}
+	\def\y{#2}
+	\noindent
+	\begin{tikzpicture}
+	\draw (0,0) rectangle (\x,\y);
+	\end{tikzpicture}
+}
+
+\newcommand{\makeinlineanswerbox}[2]
+{
+	\def\x{#1}
+	\hfill \tikz[baseline=1.5ex]{\draw (0,0) rectangle (\x,1);} \hspace{#2}
+}

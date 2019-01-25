@@ -1,0 +1,66 @@
+\aufgabenbereich{Logik und CMOS-Komplexgatter}
+In diesem Bereiche beschäftigen wir uns mit Logik und CMOS Komplexgattern. Es wird erwartet, dass Sie entsprechen Pull-up und Pull-down Netzwerke zeichnen.
+\subsection{Logische Funktionen}
+Füllen sie Folgende Wahrheitstabellen aus:\\
+(Hinweiß: $ (A \Rightarrow B)\equiv (\overline{A} \lor B)$)\\[0.3cm]
+\begin{minipage}[l]{0.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
+			$A$&$B$& $A\lor B$\\\hline
+			0&0&\\\hline
+			0&1&\\\hline
+			1&0&\\\hline	
+			1&1&\\\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}
+\begin{minipage}[r]{0.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
+			$A$&$B$& $A \Rightarrow B$\\\hline
+			0&0&\\\hline
+			0&1&\\\hline
+			1&0&\\\hline	
+			1&1&\\\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}\\[1cm]
+\noindent
+\begin{minipage}[l]{0.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
+			$A$&$B$& $\overline{A \land B}$\\\hline
+			0&0&\\\hline
+			0&1&\\\hline
+			1&0&\\\hline	
+			1&1&\\\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}
+\begin{minipage}[r]{0.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
+			$A$&$B$& $\overline{A \oplus B}$\\\hline
+			0&0&\\\hline
+			0&1&\\\hline
+			1&0&\\\hline	
+			1&1&\\\hline	
+		\end{tabular}
+	\end{center}
+\end{minipage}
+
+\subsection{Allgemeine Fragen zum Thema CMOS:}
+Wie viele Transistoren benötiget ein OR Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
+Wie viele Transistoren benötiget ein NAND Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
+Was ist der Unterschied zwischen n-Mos- und p-Mos-Transistoren?\\
+\makeanswerbox{2}
+\subsection{}
+Vereinfachen Sie die Formel $ \overline{\left(C \lor (\overline{C} \land A) \lor (\overline{\overline{A} \lor B})\right) \land \overline{C} } $ möglichst stark: \\
+\makeanswerbox{6.5}\\[0.3cm]
+Zeichnen Sie ein (strukturgleiches) CMOS-Komplexgatter das ihrem Ergebnis entspricht:\\[0.3cm]
+\makeanswerbox{12}
+
+\subsection{}
+Zeichnen Sie folgende Funktion strukturgleich als CMOS-Komplexgatter: $f(x)= \overline{(A \lor B)}$.\\
+\makeanswerbox{12}\\[0.3cm]
+Wie viele Transistoren würden Sie benötigen? \makeinlineanswerbox{1}{7cm}
