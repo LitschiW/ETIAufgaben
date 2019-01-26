@@ -1,1 +1,36 @@
 \aufgabenbereich{VHDL}
+\subsection{}
+Was ist der Unterschied zwischen einer \mintinline{vhdl}{architecture} und einem \mintinline{vhdl}{process} in VHDL?\\
+\makeanswerbox{3.5}\\[0.3cm]
+Was ist der Unterschied zwischen einem \mintinline{vhdl}{signal} und einem \mintinline{vhdl}{Port} in VHDL und wo werden diese definiert?\\
+\makeanswerbox{3.5}\\[0.3cm]
+Wofür nutzt man \mintinline{vhdl}{component}'s in VHDL\\
+\makeanswerbox{3.5}\\[0.3cm]
+Was macht der Befehl \mintinline{vhdl}{rising_edge(clk)} in einem \mintinline{vhdl}{process}?\\
+\makeanswerbox{3.5}\\[0.3cm]
+\newpage
+\subsection{}
+Gegeben sei folgender VHDL Code:
+\begin{minted}{vhdl}
+process(clk,reset) is
+begin
+	if clk'event and clk ='1' then
+		%write your code here:
+		
+		
+		
+	endif;
+	if reset'event and reset='0' then
+		q_o <= (others => '0');
+	endif;
+end process;
+\end{minted}
+Sie haben weiterhin einen Eingang d\_i zur Verfügung, q\_o soll einen Ausgang darstellen.
+Implementieren sie die Funktion eines D-Flip-Flops!\\
+Was für einen Resettyp hat dieses Flip-Flop?\\
+\begin{enumerate}
+	\item synchron aktiv High\hfill\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\hspace*{11.5cm}\\
+	\item synchron aktiv Low\hfill\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\hspace*{11.5cm}\\
+	\item asynchron aktiv High\hfill\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\hspace*{11.5cm}\\
+	\item asynchron aktiv Low\hfill\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\hspace*{11.5cm}\\
+\end{enumerate}
