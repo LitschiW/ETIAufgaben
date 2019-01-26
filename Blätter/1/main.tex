@@ -1,13 +1,13 @@
 \documentclass[12pt]{article}
 \input{usepackage}
-
 \newcounter{mysection}
 \newcommand{\aufgabenbereich}[1]{\stepcounter{mysection} \setcounter{subsection}{0}
 	\section*{Aufgabenbereich \arabic{mysection}: #1}}
 \begin{document}
 	\input{pagesetup}
 	\input{Aufgaben/Festkomma}
-	\input{Aufgaben/Fliesskomma}
+	\newpage
+	\input{Aufgaben/Fliesskomma}	
 	\input{Aufgaben/CMOS}
 	\input{Aufgaben/FFundSchaltungen}
 	\input{Aufgaben/FSM}
