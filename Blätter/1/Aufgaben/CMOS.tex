@@ -1,9 +1,11 @@
 \aufgabenbereich{Logik und CMOS-Komplexgatter}
-In diesem Bereiche beschäftigen wir uns mit Logik und CMOS Komplexgattern. Es wird erwartet, dass Sie entsprechen Pull-up und Pull-down Netzwerke zeichnen.
+In diesem Bereiche beschäftigen wir uns mit Logik und CMOS Komplexgattern. Es wird erwartet, dass Sie entsprechen Pull-up und Pull-down Netzwerke zeichnen.\\
+Weiterhin können Sie alternativ + statt $\lor$ und $\cdot$ statt $\land$ benutzen, aber halten Sie Ihre Notation einheitlich.
 \subsection{Logische Funktionen}
-Füllen sie Folgende Wahrheitstabellen aus:\\
-(Hinweis: $ (A \Rightarrow B)\equiv (\overline{A} \lor B)$)\\[0.3cm]
+Füllen Sie Folgende Wahrheitstabellen aus:\\[0.3cm]
+\renewcommand{\arraystretch}{1.3}
 \begin{minipage}[l]{0.5\textwidth}
+	\subsubsection{}
 	\begin{center}
 		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
 			$A$&$B$& $A\lor B$\\\hline
@@ -15,6 +17,7 @@ Füllen sie Folgende Wahrheitstabellen aus:\\
 	\end{center}
 \end{minipage}
 \begin{minipage}[r]{0.5\textwidth}
+	\subsubsection{}
 	\begin{center}
 		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
 			$A$&$B$& $A \Rightarrow B$\\\hline
@@ -27,6 +30,7 @@ Füllen sie Folgende Wahrheitstabellen aus:\\
 \end{minipage}\\[1cm]
 \noindent
 \begin{minipage}[l]{0.5\textwidth}
+	\subsubsection{}
 	\begin{center}
 		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
 			$A$&$B$& $\overline{A \land B}$\\\hline
@@ -38,6 +42,7 @@ Füllen sie Folgende Wahrheitstabellen aus:\\
 	\end{center}
 \end{minipage}
 \begin{minipage}[r]{0.5\textwidth}
+	\subsubsection{}
 	\begin{center}
 		\begin{tabular}{|c|c !{\vrule width 1.5pt} c|}\hline
 			$A$&$B$& $\overline{A \oplus B}$\\\hline
@@ -47,8 +52,11 @@ Füllen sie Folgende Wahrheitstabellen aus:\\
 			1&1&\\\hline	
 		\end{tabular}
 	\end{center}
-\end{minipage}
-\subsection{}
+\end{minipage}\\[0.3cm]
+\renewcommand{\arraystretch}{1}
+(Hinweis: $ (A \Rightarrow B)\equiv (\overline{A} \lor B)$)
+\newpage
+\subsection{Normalformen}
 Geben sei folgende Funktionstabelle der Funktion $F(A,B,C)=Q$:\\
 \begin{center}
 	\begin{tabular}{|c|c|c|c|}\hline
@@ -58,38 +66,37 @@ Geben sei folgende Funktionstabelle der Funktion $F(A,B,C)=Q$:\\
 		0&1&0&1\\\hline
 		0&1&1&0\\\hline
 		1&0&0&1\\\hline
-		1&0&1&1\\\hline
+		1&0&1&0\\\hline
 		1&1&0&1\\\hline
-		1&1&1&0\\\hline
+		1&1&1&1\\\hline
 	\end{tabular}
 \end{center}
-\newpage
 Welche Normalform der Funktion wäre kürzer?\\
 \begin{enumerate}
 	\item kKNF\hspace{0.5cm}\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);} \\
 	\item kDNF\hspace{0.5cm}\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);} \\
 \end{enumerate}
 Geben sie die Funktion in der gewählten Normalform an:\\
-\begin{minipage}[tl]{0.15\textwidth}
-	$F(A,B,C)=$
-\end{minipage}
-\begin{minipage}[r]{0.85\textwidth}
-	\makeanswerbox{4}
-\end{minipage}
-
-
-\subsection{Allgemeine Fragen zum Thema CMOS:}
-Wie viele Transistoren benötiget ein OR Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
-Wie viele Transistoren benötiget ein NAND Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
-Was ist der Unterschied zwischen n-Mos- und p-Mos-Transistoren?\\
-\makeanswerbox{2}
-\subsection{}
-Vereinfachen Sie die Formel $ \overline{\left(C \lor (\overline{C} \land A) \lor (\overline{\overline{A} \lor B})\right) \land \overline{C} } $ möglichst stark: \\
-\makeanswerbox{6.5}\\[0.3cm]
-Zeichnen Sie ein (strukturgleiches) CMOS-Komplexgatter das ihrem Ergebnis entspricht:\\[0.3cm]
-\makeanswerbox{12}
-
-\subsection{}
-Zeichnen Sie folgende Funktion strukturgleich als CMOS-Komplexgatter: $f(x)= \overline{(A \lor B)}$.\\
-\makeanswerbox{12}\\[0.3cm]
+\raisebox{1.3cm}{
+$F(A,B,C) =$}
+\parbox{0.85\textwidth}{
+	\begin{minipage}[t]{0.85\textwidth}
+		\makeanswerbox{3}
+	\end{minipage}
+}
+\subsection{CMOS Technologie}
+Wie viele Transistoren benötigt ein OR Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
+Wie viele Transistoren benötigt ein NAND Komplexgatter?\makeinlineanswerbox{1}{2cm}\\[0.3cm]
+Was ist der Unterschied zwischen n-Mos- und p-Mos-Transistoren?\\[0.3cm]
+\makeanswerbox{2}\noindent
+\subsection{Vereinfachen}
+Vereinfachen Sie die Formel $G(A,B,C)\equiv \overline{\left(C \lor (\overline{C} \land A) \lor (\overline{\overline{A} \lor B})\right) \land \overline{C} } $ möglichst stark: \\
+\makeanswerbox{6}\noindent
+\subsection{CMOS-Komplexgatter zeichnen}
+\subsubsection{}
+Zeichnen Sie ein (strukturgleiches) CMOS-Komplexgatter das ihrem Ergebnis aus der Vorherigen Aufgabe entspricht:\\[0.3cm]
+\makeanswerbox{10}
+\subsubsection{}
+Zeichnen Sie folgende Funktion strukturgleich als CMOS-Komplexgatter: $H(A,B,C)\equiv \overline{(A \lor B) \land C}$.\\
+\makeanswerbox{11}\\[0.3cm]
 Wie viele Transistoren würden Sie benötigen? \makeinlineanswerbox{1}{7cm}
