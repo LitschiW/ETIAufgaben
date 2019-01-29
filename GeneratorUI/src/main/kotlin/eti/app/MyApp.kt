@@ -1,6 +1,6 @@
-package com.example.demo.app
+package eti.app
 
-import com.example.demo.view.MainView
+import eti.view.MainView
 import javafx.stage.Stage
 import tornadofx.App
 

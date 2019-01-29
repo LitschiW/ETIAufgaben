@@ -1,6 +1,6 @@
-package com.example.demo.view
+package eti.view
 
-import com.example.demo.app.Styles
+import eti.app.Styles
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
