@@ -1,0 +1,64 @@
+\aufgabenbereich{Finite State Machines}
+\subsection{}
+Was ist der unterschied zwischen Moore und Mealy Automaten?\\
+\makeanswerbox{5}
+\subsection{}
+Welche Zeichenfolge(n) erkennt folgender Automat:\\
+\begin{center}
+\begin{tikzpicture}
+\node[initial,state] (A) at (0,3) {$S_0/0$};
+\node[state] (B) at (0,0) {$S_1/0$};
+\node[state] (C) at (3,0) {$S_2/0$};
+\node[state] (D) at (6,0) {$S_3/0$};
+\node[state] (E) at (6,3) {$S_4/1$};
+\path
+(A) edge[loop above] node {0} (A)
+	edge[->] node[left] {1} (B)
+(B) edge[loop left] node {1} (B)
+	edge[->] node[below]{0} (C)
+(C) edge[->] node[above right]{0} (A)
+	edge[->] node[below] {1} (D)
+(D) edge[->] node[right] {$0|1$} (E)
+(E) edge[->] node[above] {0} (A)
+	edge[->] node[above left] {1} (B);	
+\end{tikzpicture}
+\end{center}
+(Hinweis: bei einem Zustand \scalebox{0.8}{\tikz[baseline=-1ex]{\node[draw,circle]{$S_i/X$}}} bezeichnet $S_i$ den Zustand und $X$ die Ausgabe in diesem Zustand.)\\
+\begin{itemize}
+	\item \makeinlineanswerbox{3}{13cm}\\
+	\item \makeinlineanswerbox{3}{13cm}\\
+	\item \makeinlineanswerbox{3}{13cm}
+\end{itemize}
+\subsection{}
+Entwerfen sie einen synchronen Modulo 4 Zähler. Der Zähler soll bidirektional zählen können, dafür betrachten wir den Eingang $dir$. Für $dir=0$ soll vorwärts, bei $dir=1$ rückwärts gezählt werden.\\
+Zeichen Sie eine Zustandsdiagramm für diesen Automaten:\\
+\makeanswerbox{10}\\[0.3cm]
+(Hinweis: Den Clock Eingang müssen sie zunächst nicht beachten.)\\[1cm]
+Geben Sie die Zustandsübergangstabelle an:
+\begin{center}
+	\begin{tabular}{|c|c|c !{\vrule width 1.5pt} c|c|}\hline
+\multicolumn{3}{|c !{\vrule width 1.5pt}}{Takt $t$} & \multicolumn{2}{c|}{Takt $t+1$}\\\hline
+		$dir$&$s_1$&$s_0$&$s_1$&$s_0$\\\hline
+		0&0&0&&\\\hline
+		0&0&1&&\\\hline
+		0&1&0&&\\\hline
+		0&1&1&&\\\hline
+		1&0&0&&\\\hline
+		1&0&1&&\\\hline
+		1&1&0&&\\\hline
+		1&1&1&&\\\hline
+	\end{tabular}
+\end{center}
+Geben sie die Zustandsübergangslogik für den Zustand $s=s_1s_0$ an:\\[0.3cm]
+$s_1=$\makeinlineanswerbox{6}{10cm}\\[0.3cm]
+$s_0=$\makeinlineanswerbox{6}{10cm}\\[0.3cm]
+Nun fügen wir dem Automaten 4 1-Bit Ausgänge mit dem Namen ZERO, ONE, TWO, THREE hinzu. Sie sollen entsprechend ihrer Namen den Wert 1 annehmen, wenn der Automat den dazugehörigen Zustand erreicht.
+(z.B. für $s=00$ ist ZERO=1, der Rest=0)\\[0.3cm]
+$ZERO=$\makeinlineanswerbox{6}{9cm}\\[0.3cm]
+$ONE=$\makeinlineanswerbox{6}{9cm}\\[0.3cm]
+$TWO=$\makeinlineanswerbox{6}{9cm}\\[0.3cm]
+$THREE=$\makeinlineanswerbox{6}{9cm}\\[0.3cm]
+
+\newpage\noindent
+Zeichnen sie nun den Automaten auf Gatterebene. Ihnen stehen D-Flip-Flops, Normale-Gatter (AND, OR, NAND, NOR, XOR, NOT) mit beliebig vielen Eingängen zur Verfügung. Beachten Sie, dass sie nun auch den Clock Eingang betrachten müssen:\\
+\makeanswerbox{15}\\[0.3cm]
