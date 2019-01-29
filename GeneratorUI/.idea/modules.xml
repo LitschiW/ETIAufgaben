@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/GeneratorUI.iml" filepath="$PROJECT_DIR$/.idea/modules/GeneratorUI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GeneratorUI_main.iml" filepath="$PROJECT_DIR$/.idea/modules/GeneratorUI_main.iml" group="GeneratorUI" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GeneratorUI_test.iml" filepath="$PROJECT_DIR$/.idea/modules/GeneratorUI_test.iml" group="GeneratorUI" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GeneratorUI.main.iml" filepath="$PROJECT_DIR$/.idea/modules/GeneratorUI.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GeneratorUI.test.iml" filepath="$PROJECT_DIR$/.idea/modules/GeneratorUI.test.iml" />
     </modules>
   </component>
 </project>

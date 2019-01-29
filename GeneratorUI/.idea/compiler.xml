@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="GeneratorUI.main" target="1.8" />
+      <module name="GeneratorUI.test" target="1.8" />
       <module name="GeneratorUI_main" target="1.8" />
       <module name="GeneratorUI_test" target="1.8" />
     </bytecodeTargetLevel>
