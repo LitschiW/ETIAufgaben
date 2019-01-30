@@ -1,0 +1,73 @@
+\aufgabenbereich{Flipflops und Schaltungen}
+\subsection{Volladdierer}
+\subsubsection{}
+Zeichnen sie einen Halbaddierer auf Gatterebene. Setzen Sie dann 2 Halbaddierer (gekennzeichnet als \tikz[baseline=-0.8ex]{\node[rectangle,draw,black] at (0,0) {HA} } ) zu einem Volladdierer zusammen:\\[0.3cm]
+\makeanswerbox{9}\noindent
+\subsubsection{}
+Füllen Sie die Funktionstabelle für ein Volladdierer aus:
+\begin{center}
+	\begin{tabular}{|c|c|c !{\vrule width 1.5pt} c|c|}\hline
+		$A$&$B$&$C_{in}$&$S$&$C_{out}$	\\\hline
+		0&0&0&&\\\hline
+		0&0&1&&\\\hline
+		0&1&0&&\\\hline
+		0&1&1&&\\\hline
+		1&0&0&&\\\hline
+		1&0&1&&\\\hline
+		1&1&0&&\\\hline
+		1&1&1&&\\\hline
+	\end{tabular}
+\end{center}
+\vspace{1cm}
+\subsection{D-FlipFlop}
+\subsubsection{}
+Was ist der Unterschied zwischen einem D-Latch und einem D-Flip-Flop?\\
+\makeanswerbox{4}\\[0.3cm]
+Füllen Sie die Funktionstabellen für D-Latch und D-Flip-Flop aus: \\[0.3cm]
+\begin{minipage}[l]{0.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c|c !{\vrule width 1.5pt} c|}\hline
+			\multicolumn{4}{|c|}{D-Latch}\\\hline
+			$c$&$d_{in}$&$q$&$q^*$\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}
+\begin{minipage}[r]{.5\textwidth}
+	\begin{center}
+		\begin{tabular}{|c|c|c !{\vrule width 1.5pt} c|}\hline
+			\multicolumn{4}{|c|}{D-Flip-Flop}\\\hline
+			$c$&$d_{in}$&$q$&$q^*$\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+			&&&\\\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}\\[0.3cm]
+(Hinweis: \texttiming{[-,timing/slope=0]HL} bezeichnet eine sinkende, \texttiming{[-,timing/slope=0]LH} eine steigende Flanke, \textbf{-} können sie als ``1 oder 0'' benutzen. Sie müssen nicht alle Zeilen ausfüllen für die korrekte Lösung)
+\newpage\noindent
+\subsubsection{}
+Zeichnen Sie ein taktgesteuertes D-Latch auf Gatter Ebene. Makieren sie das enthaltene RS-Flipflop:\\
+\makeanswerbox{7}\\[0.3cm]
+Zeichnen Sie ein taktgesteuertes D-Flip-Flop. Nutzen Sie D-Latches als vorhandene Bauteile:\\
+\makeanswerbox{7}
+
+\subsection{Schieberegister}
+Zeichnen Sie ein 3-Bit-Links-Schieberegister:\\
+\makeanswerbox{5}\\[0.3cm]
+Wofür können Schieberegister eingesetzt werden?\\
+\makeanswerbox{5}\\[0.3cm]
+Wo kann man Schieberegister auf einem Mikrocontroller finden?\\
+\makeanswerbox{4}
