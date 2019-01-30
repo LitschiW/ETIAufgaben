@@ -19,6 +19,7 @@
 \usetikzlibrary{shadows.blur,automata,arrows}
 
 \renewcommand\thesubsection{\alph{subsection})}
+\renewcommand\thesubsubsection{\hspace*{0.3cm}\roman{subsubsection})}
 
 \newcommand{\makeanswerbox}[1]{
 	\def\x{#1}
@@ -33,12 +34,27 @@
 	\def\y{#2}
 	\noindent
 	\begin{tikzpicture}
-	\draw (0,0) rectangle (\x,\y);
+	\draw[blur shadow={shadow blur steps=10},fill = white] (0,0) rectangle (\x,\y);
 	\end{tikzpicture}
 }
 
 \newcommand{\makeinlineanswerbox}[2]
 {
 	\def\x{#1}
-	\hfill \tikz[baseline=1.5ex]{\draw (0,0) rectangle (\x,1);} \hspace*{#2}
+	\hfill \tikz[baseline=1.5ex]{\draw[blur shadow={shadow blur steps=10},fill = white] (0,0) rectangle (\x,1);} \hspace*{#2}
 }
+
+\newcommand{\setTitel}[1]{
+	\newcommand{\getTitel}{#1}
+}
+
+\newcommand{\keepTogether}[1]{
+	\noindent
+	\begin{minipage}{\textwidth}
+		#1
+	\end{minipage}
+}
+
+\newcounter{mysection}
+\newcommand{\aufgabenbereich}[1]{\stepcounter{mysection} \setcounter{subsection}{0}
+	\section*{Aufgabenbereich \arabic{mysection}: #1}}
