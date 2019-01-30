@@ -1,16 +1,12 @@
 package eti.view
 
-import eti.app.Styles
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import javafx.scene.Parent
-import javafx.scene.control.Control
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
 import tornadofx.*
 import java.io.File
 import java.nio.file.Paths
-import javax.swing.GroupLayout
 
 class MainView : View("ETI Generator") {
     override val root =
@@ -48,8 +44,6 @@ class MainView : View("ETI Generator") {
                                 marginLeft = 20.0
                             }
                         }
-
-
                         gridpaneConstraints {
                             columnRowIndex(0, 0)
                             margin = Insets(15.0)
@@ -61,7 +55,7 @@ class MainView : View("ETI Generator") {
                         }
                         textfield {
                             alignment = Pos.BASELINE_RIGHT
-                            text = "0"
+                            text = "2"
                             font = Font(15.0)
                             minWidth = 50.0
                             maxWidth = 50.0
@@ -77,20 +71,19 @@ class MainView : View("ETI Generator") {
                     }
                 }
                 bottom = vbox {
-
                     hbox {
                         textfield {
                             hgrow = Priority.ALWAYS
                             hboxConstraints {
-                                marginLeft=10.0
+                                marginLeft=5.0
                             }
                             apply {
                                 text = getNextFilePath()
                             }
                         }
-                        button("Open...") {
+                        button(" ... ") {
                             hboxConstraints {
-                                marginLeftRight(10.0)
+                                marginLeftRight(5.0)
                             }
                         }
                     }
@@ -107,7 +100,7 @@ class MainView : View("ETI Generator") {
                         }
                     }
                     borderpaneConstraints {
-                        margin = Insets(10.0)
+                        margin = Insets(5.0)
                     }
                 }
             }

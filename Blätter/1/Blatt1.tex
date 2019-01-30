@@ -1,16 +1,12 @@
 \documentclass[12pt]{article}
 \input{usepackage}
-\newcounter{mysection}
-\newcommand{\aufgabenbereich}[1]{\stepcounter{mysection} \setcounter{subsection}{0}
-	\section*{Aufgabenbereich \arabic{mysection}: #1}}
 \begin{document}
 	\setTitel{ETI Arbeitsblatt 1}
 	\input{pagesetup}
 	\input{Aufgaben/Festkomma}
 	\input{Aufgaben/Fliesskomma}
 	\input{Aufgaben/CMOS}
-	\newpage
-	\input{Aufgaben/FFundSchaltungen}
+	\include{Aufgaben/FFundSchaltungen}
 	\input{Aufgaben/FSM}
 	\input{Aufgaben/VHDL}
 	\input{Aufgaben/ComputerArchitektur}
