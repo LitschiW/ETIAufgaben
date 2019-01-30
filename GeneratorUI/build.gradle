@@ -53,4 +53,8 @@ jar {
         exclude "META-INF/*.DSA"
         exclude "META-INF/*.RSA"
     }
+    copy{
+        from "build/libs"
+        into "../"
+    }
 }
