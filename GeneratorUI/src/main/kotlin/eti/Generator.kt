@@ -1,7 +1,6 @@
 package eti
 
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Paths
 import kotlin.random.Random
@@ -29,27 +28,69 @@ class Generator {
      * @param targetFile output File for the pdf
      * @param saveTex set this to true if the generated tex code should be saved into a folder.
      */
-    fun generateDocument(topics: Map<String, String>, maxNumOfSubExercises: Int, targetFile: File, saveTex: Boolean = false) {
+    fun generateDocument(topics: Map<String, List<String>>,
+                         maxNumOfExercisesPerSubtopic: Int,
+                         targetFile: File,
+                         randomizeSubTopics: Boolean = false,
+                         saveTex: Boolean = false) {
         //one may want to do this async and lock the main screen for the duration
 
+        //check Arguments
+        if (targetFile.extension != "pdf") throw IllegalArgumentException("targetFile extention should be '.pdf'")
+        if (maxNumOfExercisesPerSubtopic <= 0) throw IllegalArgumentException("maxNumOfExercisesPerSubtopic has to be greater than 0")
+
+
         //begin main document
-        startDocument(targetFile.name)
+        startDocument(targetFile.nameWithoutExtension)
         for ((topic, subtopics) in topics) {
             //start new partial document for topic
+            val topicDoc = File(exercisesFolder.absolutePath + "\\$topic.tex")
             //add \aufgabenbereich(topic) to partial document
+            topicDoc.appendText("""
+                \aufgabenbereich{$topic}
+            """.trimIndent())
             //add \hinweis(topic)to partial document
             //generate exercises
+            val exerciseText = getExcersizeTextForTopic(topic, subtopics, maxNumOfExercisesPerSubtopic, randomizeSubTopics)
             //add subtopics/exercises to partial document
-            // store partial document into .tex file
+            topicDoc.appendText(exerciseText)
             // \include tex file into mainDocument
+            document.append("""
+                \include{Aufgaben/$topic.tex}
+            """.trimIndent())
         }
         //end main document
         endDocument()
-        //save file (optional copy .tex's into folder)
+        //save file (optional copy .tex's into a folder)
+        val latexFile = File(tempfolder.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
+        latexFile.writeText(document.toString())
         //call script to trigger latex interpreter.
         //wait for script to return and show result
 
         //notify finished (? look up kotlin async's)
+    }
+
+    private fun getExcersizeTextForTopic(topic: String, subtopics: List<String>, maxNumOfExercisesPerSubtopic: Int, randomizeSubTopics: Boolean): String {
+        val builder = StringBuilder()
+        val topicFolderPath = (repoRoot.absolutePath + "\\Aufgaben\\$topic\\")
+        for (subtopic in subtopics) {
+            builder.append(getSubExercisesFromSubTopic(topicFolderPath + subtopic, maxNumOfExercisesPerSubtopic))
+                    .append("\n")
+        }
+        return builder.toString()
+    }
+
+    private fun getSubExercisesFromSubTopic(subTopicPath: String, maxNumOfExercisesPerSubtopic: Int): String {
+        val builder = StringBuilder()
+        val subTopicFolder = File(subTopicPath)
+        val subTopicExercises = subTopicFolder.listFiles()
+        val subTopicExercisesCount = Math.min(subTopicExercises.size, maxNumOfExercisesPerSubtopic);
+        val numbs = List(subTopicExercises.size - 1) { i -> i }.shuffled()
+
+        for (i in 0..subTopicExercisesCount) {
+            builder.append(subTopicExercises[numbs[i]].readText() + "\n")
+        }
+        return builder.toString();
     }
 
     private fun startDocument(fileName: String) {
@@ -61,66 +102,20 @@ class Generator {
         }
         x.copyRecursively(setupFolder, true)
 
-        document.append("""
-\documentclass [12pt]{ article }
-\input {SetupData/usepackage}
-\begin {document}
-    \setTitel { ${fileName} }
-    \input {SetupData/pagesetup}
-        """.trimIndent())
+        document.appendln("""
+\documentclass[12pt]{ article }
+\input{SetupData/usepackage}
+\begin{document}
+    \setTitel{${fileName}}
+    \input{SetupData/pagesetup}
+    """.trimIndent())
     }
 
     private fun endDocument() {
-        document.append("""
+        document.appendln("""
 \end{document}
 %this document was automatically generated
         """.trimIndent())
-    }
-
-
-    private fun getTwoRandomExcercisesFromTopic(exerciseTopic: File): String {
-        val result = StringBuilder()
-        val count = exerciseTopic.listFiles().size
-        if (count <= 0 || count == 1 && exerciseTopic.listFiles()[0].listFiles().size <= 1) throw Exception("There are not enough exercises for this Topic")
-
-        val topic1Nb = Random.nextInt(0, count)
-        var topic2Nb = topic1Nb
-
-        while (topic1Nb == topic2Nb && count != 1) {
-            topic2Nb = Random.nextInt(0, count)
-        }
-        val topic1File = exerciseTopic.listFiles()[topic1Nb]
-        val topic2File = exerciseTopic.listFiles()[topic2Nb]
-
-        if (topic1Nb != topic2Nb) {
-            result.append(getRandomExercisesFromSubTopic(topic1File, 1))
-            result.append(getRandomExercisesFromSubTopic(topic2File, 1))
-        } else {
-            result.append(getRandomExercisesFromSubTopic(topic1File, 2))
-        }
-        return result.toString()
-    }
-
-    private fun getRandomExercisesFromSubTopic(subTopic: File, count: Int = 0): String {
-        val exercises = subTopic.listFiles()
-        if (count < 0 || count > exercises.size) throw Exception("There are not enough exercises in this Topic")
-        val result = StringBuilder()
-
-        val used = mutableSetOf<Int>()
-
-        for (i in 0..count) {
-            var next = Random.nextInt(0, exercises.size)
-            while (used.contains(next))
-                next = Random.nextInt(0, exercises.size)
-            val nextFile = exercises[next]
-            result.append(getLinesOfFile(nextFile)).append("\n")
-        }
-        return result.toString()
-    }
-
-    private fun getLinesOfFile(file: File): String {
-        if (!file.isFile) throw IOException("This is not a File!")
-        return file.readText()
     }
 }
 
