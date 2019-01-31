@@ -4,6 +4,7 @@ import eti.Generator
 import eti.view.MainView
 import javafx.stage.Stage
 import tornadofx.App
+import java.io.File
 
 class MyApp: App(MainView::class, Styles::class)
 {
@@ -13,7 +14,7 @@ class MyApp: App(MainView::class, Styles::class)
         super.start(stage)
 
         val x = Generator()
-        x.generateDocument(mapOf(),0,"")
+        x.generateDocument(mapOf(),0, File("result.pdf"))
 
     }
 }

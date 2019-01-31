@@ -12,6 +12,16 @@ class Generator {
     private val tempfolder: File = createTempDir()
     private val setupFolder = File(tempfolder.absolutePath + "\\SetupData\\")
     private val exercisesFolder = File(tempfolder.absolutePath + "\\Aufgaben\\")
+    private val repoRoot: File
+
+    init {
+        val root = File(Paths.get("").toAbsolutePath().toString())
+
+        repoRoot =
+                if (root.name == "GeneratorUI") {
+                    root.parentFile
+                } else root;
+    }
 
     /**
      * @param topics Map that contains the list of topics (absolute paths) used as keys and references the used list of subtopics(names) as value to this key.
@@ -52,7 +62,7 @@ class Generator {
         x.copyRecursively(setupFolder, true)
 
         document.append("""
-\ documentclass [12pt]{ article }
+\documentclass [12pt]{ article }
 \input {SetupData/usepackage}
 \begin {document}
     \setTitel { ${fileName} }
@@ -60,8 +70,7 @@ class Generator {
         """.trimIndent())
     }
 
-    private fun endDocument()
-    {
+    private fun endDocument() {
         document.append("""
 \end{document}
 %this document was automatically generated
