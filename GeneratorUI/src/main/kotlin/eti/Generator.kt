@@ -1,20 +1,29 @@
+package eti
+
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.nio.file.Paths
 import kotlin.random.Random
 
 class Generator {
+
+    private val document = StringBuilder()
+    private val tempfolder: File = createTempDir()
+    private val setupFolder = File(tempfolder.absolutePath + "\\SetupData\\")
+    private val exercisesFolder = File(tempfolder.absolutePath + "\\Aufgaben\\")
+
     /**
      * @param topics Map that contains the list of topics (absolute paths) used as keys and references the used list of subtopics(names) as value to this key.
      * @param maxNumOfSubExercises maximum number of subtopics loads for each topic, use Int.MAX_VALUE for everything.
      * @param targetFile output File for the pdf
      * @param saveTex set this to true if the generated tex code should be saved into a folder.
      */
-    fun generateDocument(topics: Map<String, String>, maxNumOfSubExercises: Int, targetFile: String = "", saveTex: Boolean = false) {
+    fun generateDocument(topics: Map<String, String>, maxNumOfSubExercises: Int, targetFile: File, saveTex: Boolean = false) {
         //one may want to do this async and lock the main screen for the duration
 
-        //generate temp folder
         //begin main document
+        startDocument(targetFile.name)
         for ((topic, subtopics) in topics) {
             //start new partial document for topic
             //add \aufgabenbereich(topic) to partial document
@@ -25,6 +34,7 @@ class Generator {
             // \include tex file into mainDocument
         }
         //end main document
+        endDocument()
         //save file (optional copy .tex's into folder)
         //call script to trigger latex interpreter.
         //wait for script to return and show result
@@ -32,21 +42,32 @@ class Generator {
         //notify finished (? look up kotlin async's)
     }
 
-    private fun genDocFile(exerciseString: String, targetFile: File) {
-        val text = """
-\documentclass[12pt]{article}
-\input{../SetupData/usepackage}
-\begin{document}
-    \setTitel{${targetFile.name}}
-    \input{../SetupData/pagesetup}
-        $exerciseString
-\end{document}
-""".trimIndent()
-        val writer = FileWriter(targetFile)
-        writer.append(text)
-        writer.flush()
-        writer.close()
+    private fun startDocument(fileName: String) {
+        //copy SetupData to tempfolder
+        var x = File(Paths.get("SetupData").toAbsolutePath().toString())
+        if (!x.exists()) {//find folder if we are debugging
+            x = x.parentFile.parentFile
+            x = x.listFiles().find { file -> file.name == "SetupData" }!!
+        }
+        x.copyRecursively(setupFolder, true)
+
+        document.append("""
+\ documentclass [12pt]{ article }
+\input {SetupData/usepackage}
+\begin {document}
+    \setTitel { ${fileName} }
+    \input {SetupData/pagesetup}
+        """.trimIndent())
     }
+
+    private fun endDocument()
+    {
+        document.append("""
+\end{document}
+%this document was automatically generated
+        """.trimIndent())
+    }
+
 
     private fun getTwoRandomExcercisesFromTopic(exerciseTopic: File): String {
         val result = StringBuilder()
