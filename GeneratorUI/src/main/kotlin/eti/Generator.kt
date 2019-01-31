@@ -1,78 +1,96 @@
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import java.nio.file.Paths
 import kotlin.random.Random
 
+class Generator {
+    /**
+     * @param topics Map that contains the list of topics (absolute paths) used as keys and references the used list of subtopics(names) as value to this key.
+     * @param maxNumOfSubExercises maximum number of subtopics loads for each topic, use Int.MAX_VALUE for everything.
+     * @param targetFile output File for the pdf
+     * @param saveTex set this to true if the generated tex code should be saved into a folder.
+     */
+    fun generateDocument(topics: Map<String, String>, maxNumOfSubExercises: Int, targetFile: String = "", saveTex: Boolean = false) {
+        //one may want to do this async and lock the main screen for the duration
 
+        //generate temp folder
+        //begin main document
+        for ((topic, subtopics) in topics) {
+            //start new partial document for topic
+            //add \aufgabenbereich(topic) to partial document
+            //add \hinweis(topic)to partial document
+            //generate exercises
+            //add subtopics/exercises to partial document
+            // store partial document into .tex file
+            // \include tex file into mainDocument
+        }
+        //end main document
+        //save file (optional copy .tex's into folder)
+        //call script to trigger latex interpreter.
+        //wait for script to return and show result
 
-fun main(args: Array<String>) {
-    val workingDic = Paths.get("").toAbsolutePath().toString()
-    val workingDicFile = File(workingDic).parentFile
+        //notify finished (? look up kotlin async's)
+    }
 
-    val targetFile = File("$workingDic\\derp.tex")
-    genDoc("",targetFile)
-}
-
-fun genDoc(exerciseString :String, targetFile:File)
-{
-    val text = """
+    private fun genDocFile(exerciseString: String, targetFile: File) {
+        val text = """
 \documentclass[12pt]{article}
 \input{../SetupData/usepackage}
 \begin{document}
     \setTitel{${targetFile.name}}
-   \input{../SetupData/pagesetup}
+    \input{../SetupData/pagesetup}
         $exerciseString
 \end{document}
 """.trimIndent()
-    val writer = FileWriter(targetFile)
-    writer.append(text)
-    writer.flush()
-    writer.close()
-}
-
- fun getTwoRandomExcercisesFromTopic(exerciseTopic: File) : String {
-    val result = StringBuilder()
-    val count = exerciseTopic.listFiles().size
-    if (count <= 0 || count == 1 && exerciseTopic.listFiles()[0].listFiles().size <= 1) throw Exception("There are not enough exercises for this Topic")
-
-    val topic1Nb = Random.nextInt(0, count)
-    var topic2Nb = topic1Nb
-
-    while (topic1Nb == topic2Nb && count != 1) {
-        topic2Nb = Random.nextInt(0, count)
-    }
-    val topic1File = exerciseTopic.listFiles()[topic1Nb]
-    val topic2File = exerciseTopic.listFiles()[topic2Nb]
-
-    if (topic1Nb != topic2Nb) {
-        result.append(getRandomExercisesFromSubTopic(topic1File, 1))
-        result.append(getRandomExercisesFromSubTopic(topic2File, 1))
-    } else {
-        result.append(getRandomExercisesFromSubTopic(topic1File, 2))
+        val writer = FileWriter(targetFile)
+        writer.append(text)
+        writer.flush()
+        writer.close()
     }
 
-    return result.toString()
-}
+    private fun getTwoRandomExcercisesFromTopic(exerciseTopic: File): String {
+        val result = StringBuilder()
+        val count = exerciseTopic.listFiles().size
+        if (count <= 0 || count == 1 && exerciseTopic.listFiles()[0].listFiles().size <= 1) throw Exception("There are not enough exercises for this Topic")
 
- fun getRandomExercisesFromSubTopic(subTopic: File, count: Int = 0): String {
-    val exercises = subTopic.listFiles()
-    if (count < 0 || count > exercises.size) throw Exception("There are not enough exercises in this Topic")
-    val result = StringBuilder()
+        val topic1Nb = Random.nextInt(0, count)
+        var topic2Nb = topic1Nb
 
-    val used = mutableSetOf<Int>()
+        while (topic1Nb == topic2Nb && count != 1) {
+            topic2Nb = Random.nextInt(0, count)
+        }
+        val topic1File = exerciseTopic.listFiles()[topic1Nb]
+        val topic2File = exerciseTopic.listFiles()[topic2Nb]
 
-    for (i in 0..count) {
-        var next = Random.nextInt(0, exercises.size)
-        while (used.contains(next))
-            next = Random.nextInt(0, exercises.size)
-        val nextFile = exercises[next]
-        result.append(getLinesOfFile(nextFile)).append("\n")
+        if (topic1Nb != topic2Nb) {
+            result.append(getRandomExercisesFromSubTopic(topic1File, 1))
+            result.append(getRandomExercisesFromSubTopic(topic2File, 1))
+        } else {
+            result.append(getRandomExercisesFromSubTopic(topic1File, 2))
+        }
+        return result.toString()
     }
-    return result.toString()
+
+    private fun getRandomExercisesFromSubTopic(subTopic: File, count: Int = 0): String {
+        val exercises = subTopic.listFiles()
+        if (count < 0 || count > exercises.size) throw Exception("There are not enough exercises in this Topic")
+        val result = StringBuilder()
+
+        val used = mutableSetOf<Int>()
+
+        for (i in 0..count) {
+            var next = Random.nextInt(0, exercises.size)
+            while (used.contains(next))
+                next = Random.nextInt(0, exercises.size)
+            val nextFile = exercises[next]
+            result.append(getLinesOfFile(nextFile)).append("\n")
+        }
+        return result.toString()
+    }
+
+    private fun getLinesOfFile(file: File): String {
+        if (!file.isFile) throw IOException("This is not a File!")
+        return file.readText()
+    }
 }
 
- fun getLinesOfFile(file: File): String {
-    if (!file.isFile) throw IOException("This is not a File!")
-    return file.readText()
-}
