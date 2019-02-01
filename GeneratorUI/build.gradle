@@ -38,7 +38,7 @@ dependencies {
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
-mainClassName = "com.example.demo.app.MyApp"
+mainClassName = "eti.app.MyApp"
 
 jar {
     manifest {
@@ -52,5 +52,9 @@ jar {
         exclude "META-INF/*.SF"
         exclude "META-INF/*.DSA"
         exclude "META-INF/*.RSA"
+    }
+    copy{
+        from "build/libs"
+        into "../"
     }
 }
