@@ -5,6 +5,15 @@ import java.nio.file.Paths
 import java.io.InputStreamReader
 import java.io.BufferedReader
 
+/**
+ * max be used later to switch latex generator away from pdfLaTeX
+ * */
+enum class PdfGenerator {
+    PDFLaTeX,
+    LuaLaTeX,
+    XeLaTeX,
+    LaTex
+}
 
 class Generator {
 
@@ -34,12 +43,11 @@ class Generator {
                          targetFile: File,
                          randomizeSubTopics: Boolean = false,
                          saveTex: Boolean = false) {
-        //one may want to do this async and lock the main screen for the duration
+//one may want to do this async and lock the main screen for the duration
 
         //check Arguments
         if (targetFile.extension != "pdf") throw IllegalArgumentException("targetFile extension should be '.pdf'")
         if (maxNumOfExercisesPerSubtopic <= 0) throw IllegalArgumentException("maxNumOfExercisesPerSubtopic has to be greater than 0")
-
 
         //begin main document
         startDocument(targetFile.nameWithoutExtension)
@@ -63,23 +71,42 @@ class Generator {
         }
         //end main document
         endDocument()
+        //generate pdf file and copies it to target (also copies tex if necessary )
+        generatePDF(targetFile, saveTex)
+        //cleanup
+        tempDir.deleteRecursively()
+        //notify finished (? look up kotlin event system)
 
+//for debug only
+        targetFile.delete()
+        File(targetFile.absolutePath.removeSuffix(".pdf")).deleteRecursively()
+    }
 
+    private fun generatePDF(targetFile: File, saveTex: Boolean) {
         //save file
         val latexFile = File(tempDir.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
         latexFile.writeText(document.toString())
-//if saveTex: copy result's tex structure into the targetFile's folder
 
+        //if saveTex: copy result's tex structure into the targetFile's folder
+        if (saveTex) {
+            tempDir.copyRecursively(File(targetFile.absolutePath.removeSuffix(".pdf")), true)
+        }
 
         //call script to trigger latex interpreter.
         interpretLatex(latexFile) //command will be run synchronously
-//if saveTex:  copy pdf in targetFile's folder
-//else copy pdf into targetFile
 
-        //notify finished (? look up kotlin event system)
+        //if saveTex:  copy pdf in targetFile's folder
+        val pdfFile = File(tempDir.absolutePath + "\\${targetFile.name}")
+        if (saveTex) {
+            pdfFile.copyTo(File(targetFile.absolutePath.removeSuffix(".pdf") + "\\${targetFile.name}"))
+        } else {
+            //else copy pdf into targetFile
+            pdfFile.copyTo(targetFile)
+        }
     }
 
-    private fun interpretLatex(latexFile:File) {
+    private fun interpretLatex(latexFile: File) {
+        //combine command
         val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
         //Runtime.getRuntime().exec(command)
         val p = ProcessBuilder(command.split(' '))
