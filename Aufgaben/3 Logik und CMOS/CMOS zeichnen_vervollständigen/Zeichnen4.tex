@@ -1,0 +1,49 @@
+\keepTogether{
+	\subsection{CMOS-Komplexgatter 4}
+	Vervollständigen Sie folgendes CMOS-Gatter:\\
+	\noindent
+	\begin{tikzpicture}
+	
+	%box and center
+	\draw[blur shadow={shadow blur steps=10},fill = white] (0,0) rectangle (\textwidth,15);
+	\draw[draw, black] (3,7.5) -- (\textwidth-20,7.5) node[right]{Q};
+	
+	%topside
+	\node[draw,circle,scale = 0.8] (vdd) at (\textwidth/2,14) {$V_{dd}$} ;
+	\draw (vdd.south) to[short,-*] (vdd|-1,13) -- (3,13) -- (\textwidth-100,13);
+	
+	%bottom side
+	\node[nmos](mos1) at (\textwidth/3,5) {} ;
+	\node[nmos](mos2) at (\textwidth-\textwidth/3,5) {} ;
+	\node[nmos](mos3) at (\textwidth/2,3.44) {} ;
+	\node[rground] (gnd) at (\textwidth/2,1) {};
+	
+	\draw
+	(mos1.source) -- (mos3.drain) -- (mos2.source)
+	(mos3.source) -- (gnd)
+	(mos1.drain) to[short,-*] (mos1|-0,7.5)
+	(mos2.drain) to[short,-*] (mos2|-0,7.5)
+	(mos1.gate) node[left] {$A$}
+	(mos2.gate) node[left] {$\overline{B}$}
+	(mos3.gate) node[left] {$C$};
+	
+	%this is not accually how circuit tikz schould be used, but it works just fine! 
+	\end{tikzpicture}\\[.3cm]
+	Welche Funktion wurde hier implementiert? \makeinlineanswerbox{9}{0cm}
+}\noindent
+%------------------------------------------------------------------------------------------------------------
+%Befehle:
+	
+%Antwortboxen können folgendermaßen erzeugt werden:
+%\makeanswerbox{height}
+%\makeinlineanswrebox{length}{rechtes padding}
+%\makecustomanswerbox{width}{height}
+
+%Um Zeilenumbrüche innerhalb einer Aufgabe zu vermeiden nutze:
+%\keepTogether{text}
+
+%\subsubsection{} kann benutzt werden um die Aufgabe weiterhin zu unterteilen
+
+%Falls deine Aufgabe zusätzliche usepackages benötigen sollte: trage sie einfach in die usepackage Datei in 
+%ETIPAVorschlaege\SetupData\usepackage.tex ein schreibe die Funktion hinzu. packages die nicht annotiert sind,
+%werden nicht akzeptiert
