@@ -1,16 +1,17 @@
 package eti
 
 import java.io.File
-import java.io.IOException
 import java.nio.file.Paths
-import kotlin.random.Random
+import java.io.InputStreamReader
+import java.io.BufferedReader
+
 
 class Generator {
 
     private val document = StringBuilder()
-    private val tempfolder: File = createTempDir()
-    private val setupFolder = File(tempfolder.absolutePath + "\\SetupData\\")
-    private val exercisesFolder = File(tempfolder.absolutePath + "\\Aufgaben\\")
+    private val tempDir: File = createTempDir()
+    private val setupFolder = File(tempDir.absolutePath + "\\SetupData\\")
+    private val exercisesFolder = File(tempDir.absolutePath + "\\Aufgaben\\")
     private val repoRoot: File
 
     init {
@@ -19,7 +20,7 @@ class Generator {
         repoRoot =
                 if (root.name == "GeneratorUI") {
                     root.parentFile
-                } else root;
+                } else root
     }
 
     /**
@@ -36,7 +37,7 @@ class Generator {
         //one may want to do this async and lock the main screen for the duration
 
         //check Arguments
-        if (targetFile.extension != "pdf") throw IllegalArgumentException("targetFile extention should be '.pdf'")
+        if (targetFile.extension != "pdf") throw IllegalArgumentException("targetFile extension should be '.pdf'")
         if (maxNumOfExercisesPerSubtopic <= 0) throw IllegalArgumentException("maxNumOfExercisesPerSubtopic has to be greater than 0")
 
 
@@ -49,9 +50,10 @@ class Generator {
             topicDoc.appendText("""
                 \aufgabenbereich{$topic}
             """.trimIndent())
-            //add \hinweis(topic)to partial document
+//add \hinweis(topic)to partial document
+
             //generate exercises
-            val exerciseText = getExcersizeTextForTopic(topic, subtopics, maxNumOfExercisesPerSubtopic, randomizeSubTopics)
+            val exerciseText = getExerciseTextForTopic(topic, subtopics, maxNumOfExercisesPerSubtopic, randomizeSubTopics)
             //add subtopics/exercises to partial document
             topicDoc.appendText(exerciseText)
             // \include tex file into mainDocument
@@ -61,16 +63,47 @@ class Generator {
         }
         //end main document
         endDocument()
-        //save file (optional copy .tex's into a folder)
-        val latexFile = File(tempfolder.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
-        latexFile.writeText(document.toString())
-        //call script to trigger latex interpreter.
-        //wait for script to return and show result
 
-        //notify finished (? look up kotlin async's)
+
+        //save file
+        val latexFile = File(tempDir.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
+        latexFile.writeText(document.toString())
+//if saveTex: copy result's tex structure into the targetFile's folder
+
+
+        //call script to trigger latex interpreter.
+        interpretLatex(latexFile) //command will be run synchronously
+//if saveTex:  copy pdf in targetFile's folder
+//else copy pdf into targetFile
+
+        //notify finished (? look up kotlin event system)
     }
 
-    private fun getExcersizeTextForTopic(topic: String, subtopics: List<String>, maxNumOfExercisesPerSubtopic: Int, randomizeSubTopics: Boolean): String {
+    private fun interpretLatex(latexFile:File) {
+        val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
+        //Runtime.getRuntime().exec(command)
+        val p = ProcessBuilder(command.split(' '))
+                .directory(tempDir)
+                .start()
+        val stdInput = BufferedReader(InputStreamReader(p.inputStream))
+        val stdError = BufferedReader(InputStreamReader(p.errorStream))
+        // read the output from the command
+        println("Here is the standard output of the command:\n")
+        var s: String?
+        do {
+            s = stdInput.readLine()
+            System.out.println(s)
+        } while ((s) != null)
+
+        // read any errors from the attempted command
+        println("Here is the standard error of the command (if any):\n")
+        do {
+            s = stdError.readLine()
+            //System.out.println(s)
+        } while ((s) != null)
+    }
+
+    private fun getExerciseTextForTopic(topic: String, subtopics: List<String>, maxNumOfExercisesPerSubtopic: Int, randomizeSubTopics: Boolean): String {
         val builder = StringBuilder()
         val topicFolderPath = (repoRoot.absolutePath + "\\Aufgaben\\$topic\\")
         for (subtopic in subtopics) {
@@ -94,7 +127,7 @@ class Generator {
     }
 
     private fun startDocument(fileName: String) {
-        //copy SetupData to tempfolder
+        //copy SetupData to tempDir
         var x = File(Paths.get("SetupData").toAbsolutePath().toString())
         if (!x.exists()) {//find folder if we are debugging
             x = x.parentFile.parentFile
@@ -103,10 +136,10 @@ class Generator {
         x.copyRecursively(setupFolder, true)
 
         document.appendln("""
-\documentclass[12pt]{ article }
-\input{SetupData/usepackage}
-\begin{document}
-    \setTitel{${fileName}}
+\documentclass[12pt]{article}
+    \input{SetupData/usepackage}
+    \begin{document}
+    %\setTitel{${fileName}}
     \input{SetupData/pagesetup}
     """.trimIndent())
     }
