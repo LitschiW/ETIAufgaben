@@ -166,7 +166,7 @@ class Generator {
 \documentclass[12pt]{article}
     \input{SetupData/usepackage}
     \begin{document}
-    %\setTitel{${fileName}}
+    \setTitel{${fileName}}
     \input{SetupData/pagesetup}
     """.trimIndent())
     }

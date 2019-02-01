@@ -1,5 +1,6 @@
 package eti.app
 
+import eti.ExerciseDirectory
 import eti.Generator
 import eti.view.MainView
 import javafx.stage.Stage
@@ -12,6 +13,7 @@ class MyApp : App(MainView::class, Styles::class) {
         stage.minWidth = 800.0
         super.start(stage)
 
+        val b = ExerciseDirectory
         val x = Generator()
         x.generateDocument(mapOf(), 2, File("D:\\result.pdf"), saveTex = true)
     }

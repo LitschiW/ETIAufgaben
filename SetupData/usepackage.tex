@@ -63,3 +63,10 @@
 \newcounter{mysection}
 \newcommand{\aufgabenbereich}[1]{\stepcounter{mysection} \setcounter{subsection}{0}
 	\section*{Aufgabenbereich \arabic{mysection}: #1}}
+
+\newcommand{hint}[1]{
+	\noindent
+	\begin{minipage}[c]{0.85\textwidth}
+		#1
+	\end{minipage}[c]{0.85\textwidth}
+}
