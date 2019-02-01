@@ -14,6 +14,10 @@ object ExerciseDirectory {
     private val subtopics: MutableList<SubTopic> = mutableListOf()
     private val exercises: MutableList<Exercise> = mutableListOf()
 
+    val Topics get() = topics.toList()
+    val SubTopics get() = subtopics.toList()
+    val Exercises get() = exercises.toList()
+
     init {
         //looking for the directory root
         var rootFile = File(Paths.get("Aufgaben").toAbsolutePath().toString())
@@ -26,12 +30,14 @@ object ExerciseDirectory {
 
         this.rootFile = rootFile
         for (file in this.rootFile.listFiles()) {
+            if (!file.isDirectory) continue
+
             val newTopic = Topic(file.absolutePath)
             topics.add(newTopic)
-            subtopics.addAll(newTopic.getSubTopics())
-            exercises.addAll(newTopic.getLooseExercises())
-            for (subTopic in newTopic.getSubTopics()) {
-                exercises.addAll(subTopic.exercises)
+            subtopics.addAll(newTopic.SubTopics)
+            exercises.addAll(newTopic.LooseExercises)
+            for (subTopic in newTopic.SubTopics) {
+                exercises.addAll(subTopic.Exercises)
             }
         }
     }

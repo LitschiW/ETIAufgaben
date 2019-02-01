@@ -5,7 +5,9 @@ import java.net.URI
 
 class SubTopic : File {
 
-    val exercises: MutableList<Exercise> = mutableListOf()
+    private val exercises: MutableList<Exercise> = mutableListOf()
+
+    val Exercises get() = exercises.toList()
 
     constructor(pathname: String?) : super(pathname)
     constructor(parent: String?, child: String?) : super(parent, child)
@@ -15,7 +17,10 @@ class SubTopic : File {
     init {
         //load exercises
         for (file in listFiles()) {
-            if (file.extension == ".tex") exercises.add(Exercise(file.absolutePath))
+            println(file.extension)
+            if (file.extension == "tex") {
+                exercises.add(Exercise(file.absolutePath))
+            }
         }
     }
 

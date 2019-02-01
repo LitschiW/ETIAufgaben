@@ -13,8 +13,6 @@ class MyApp : App(MainView::class, Styles::class) {
         stage.minWidth = 800.0
         super.start(stage)
 
-        val b = ExerciseDirectory
-        val x = Generator()
         x.generateDocument(mapOf(), 2, File("D:\\result.pdf"), saveTex = true)
     }
 }

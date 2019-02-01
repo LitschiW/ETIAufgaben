@@ -10,6 +10,9 @@ class Topic : File {
     private val looseExercises: MutableList<Exercise>
     private val hint: File?
 
+    val SubTopics get() = subTopics.toList()
+    val LooseExercises get() = looseExercises.toList()
+
     constructor(pathname: String?) : super(pathname)
     constructor(parent: String?, child: String?) : super(parent, child)
     constructor(parent: File?, child: String?) : super(parent, child)
@@ -23,12 +26,11 @@ class Topic : File {
         //load subtopics
         subTopics = mutableListOf()
         looseExercises = mutableListOf()
-        val derpFile = File("$absolutePath").listFiles()
-        val files = this.listFiles()
         for (file in listFiles()) {
             if (file.isDirectory) subTopics.add(SubTopic(file.absolutePath))
-            else if (file.isFile && file.extension == ".tex") looseExercises.add(Exercise(file.absolutePath))
+            else if (file.isFile && file.extension == "tex") looseExercises.add(Exercise(file.absolutePath))
         }
+        var x = 5
     }
 
     fun getHint(): String {
@@ -61,13 +63,5 @@ class Topic : File {
         }
 
         return builder.toString()
-    }
-
-    fun getSubTopics(): List<SubTopic> {
-        return subTopics.toList()
-    }
-
-    fun getLooseExercises(): List<Exercise> {
-        return looseExercises.toList()
     }
 }

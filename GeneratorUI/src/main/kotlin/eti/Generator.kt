@@ -26,10 +26,7 @@ class Generator {
     init {
         val root = File(Paths.get("").toAbsolutePath().toString())
 
-        repoRoot =
-                if (root.name == "GeneratorUI") {
-                    root.parentFile
-                } else root
+        repoRoot =  if (root.name == "GeneratorUI") root.parentFile else root
     }
 
     /**
@@ -54,16 +51,20 @@ class Generator {
         for ((topic, subtopics) in topics) {
             //start new partial document for topic
             val topicDoc = File(exercisesFolder.absolutePath + "\\$topic.tex")
+
             //add \aufgabenbereich(topic) to partial document
             topicDoc.appendText("""
                 \aufgabenbereich{$topic}
             """.trimIndent())
+
 //add \hinweis(topic)to partial document
 
             //generate exercises
             val exerciseText = getExerciseTextForTopic(topic, subtopics, maxNumOfExercisesPerSubtopic, randomizeSubTopics)
+
             //add subtopics/exercises to partial document
             topicDoc.appendText(exerciseText)
+
             // \include tex file into mainDocument
             document.append("""
                 \include{Aufgaben/$topic.tex}
@@ -92,7 +93,7 @@ class Generator {
             tempDir.copyRecursively(File(targetFile.absolutePath.removeSuffix(".pdf")), true)
         }
 
-        //call script to trigger latex interpreter.
+        //call command to trigger latex interpreter
         interpretLatex(latexFile) //command will be run synchronously
 
         //if saveTex:  copy pdf in targetFile's folder
@@ -178,4 +179,3 @@ class Generator {
         """.trimIndent())
     }
 }
-
