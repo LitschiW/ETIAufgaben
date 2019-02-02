@@ -102,27 +102,21 @@ class Generator {
     }
 
     private fun interpretLatex(latexFile: File) {
-        //combine command
+        //create command...
         val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
-        //Runtime.getRuntime().exec(command)
+
         val p = ProcessBuilder(command.split(' '))
                 .directory(tempDir)
-                .start()
+                .start() //..and run it
         val stdInput = BufferedReader(InputStreamReader(p.inputStream))
-        val stdError = BufferedReader(InputStreamReader(p.errorStream))
+
+
         // read the output from the command
         println("Here is the standard output of the command:\n")
         var s: String?
         do {
             s = stdInput.readLine()
             System.out.println(s)
-        } while ((s) != null)
-
-        // read any errors from the attempted command
-        println("Here is the standard error of the command (if any):\n")
-        do {
-            s = stdError.readLine()
-            //System.out.println(s)
         } while ((s) != null)
     }
 
