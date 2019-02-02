@@ -1,5 +1,7 @@
 package eti
 
+import eti.data.SubTopic
+import eti.data.Topic
 import java.io.File
 import java.nio.file.Paths
 import java.io.InputStreamReader
@@ -26,7 +28,7 @@ class Generator {
     init {
         val root = File(Paths.get("").toAbsolutePath().toString())
 
-        repoRoot =  if (root.name == "GeneratorUI") root.parentFile else root
+        repoRoot = if (root.name == "GeneratorUI") root.parentFile else root
     }
 
     /**
@@ -35,7 +37,7 @@ class Generator {
      * @param targetFile output File for the pdf
      * @param saveTex set this to true if the generated tex code should be saved into a folder.
      */
-    fun generateDocument(topics: Map<String, List<String>>,
+    fun generateDocument(topics: Map<Topic, List<SubTopic>>,
                          maxNumOfExercisesPerSubtopic: Int,
                          targetFile: File,
                          randomizeSubTopics: Boolean = false,
@@ -48,27 +50,23 @@ class Generator {
 
         //begin main document
         startDocument(targetFile.nameWithoutExtension)
+
+        //iterate over selected Topics and Subtopics
         for ((topic, subtopics) in topics) {
             //start new partial document for topic
-            val topicDoc = File(exercisesFolder.absolutePath + "\\$topic.tex")
+            val topicDoc = File(exercisesFolder.absolutePath + "\\${topic.nameWithoutExtension.replace(Regex("[ $\"{}]"),"")}.tex")
+//            if(!topicDoc.createNewFile()) {
+// //may handle temp file already existing
+//            }
 
-            //add \aufgabenbereich(topic) to partial document
-            topicDoc.appendText("""
-                \aufgabenbereich{$topic}
-            """.trimIndent())
+            //let the topic generate its text
+            val topicText = topic.generateText(subtopics, maxNumOfExercisesPerSubtopic)
 
-//add \hinweis(topic)to partial document
-
-            //generate exercises
-            val exerciseText = getExerciseTextForTopic(topic, subtopics, maxNumOfExercisesPerSubtopic, randomizeSubTopics)
-
-            //add subtopics/exercises to partial document
-            topicDoc.appendText(exerciseText)
+            //add subtopics/exercise text to partial document
+            topicDoc.appendText(topicText)
 
             // \include tex file into mainDocument
-            document.append("""
-                \include{Aufgaben/$topic.tex}
-            """.trimIndent())
+            document.appendln("""      \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
         }
         //end main document
         endDocument()
@@ -76,11 +74,8 @@ class Generator {
         generatePDF(targetFile, saveTex)
         //cleanup
         tempDir.deleteRecursively()
-        //notify finished (? look up kotlin event system)
+//notify finished (? look up kotlin event system)
 
-//for debug only
-        targetFile.delete()
-        File(targetFile.absolutePath.removeSuffix(".pdf")).deleteRecursively()
     }
 
     private fun generatePDF(targetFile: File, saveTex: Boolean) {
@@ -131,29 +126,6 @@ class Generator {
         } while ((s) != null)
     }
 
-    private fun getExerciseTextForTopic(topic: String, subtopics: List<String>, maxNumOfExercisesPerSubtopic: Int, randomizeSubTopics: Boolean): String {
-        val builder = StringBuilder()
-        val topicFolderPath = (repoRoot.absolutePath + "\\Aufgaben\\$topic\\")
-        for (subtopic in subtopics) {
-            builder.append(getSubExercisesFromSubTopic(topicFolderPath + subtopic, maxNumOfExercisesPerSubtopic))
-                    .append("\n")
-        }
-        return builder.toString()
-    }
-
-    private fun getSubExercisesFromSubTopic(subTopicPath: String, maxNumOfExercisesPerSubtopic: Int): String {
-        val builder = StringBuilder()
-        val subTopicFolder = File(subTopicPath)
-        val subTopicExercises = subTopicFolder.listFiles()
-        val subTopicExercisesCount = Math.min(subTopicExercises.size, maxNumOfExercisesPerSubtopic);
-        val numbs = List(subTopicExercises.size - 1) { i -> i }.shuffled()
-
-        for (i in 0..subTopicExercisesCount) {
-            builder.append(subTopicExercises[numbs[i]].readText() + "\n")
-        }
-        return builder.toString();
-    }
-
     private fun startDocument(fileName: String) {
         //copy SetupData to tempDir
         var x = File(Paths.get("SetupData").toAbsolutePath().toString())
@@ -165,11 +137,13 @@ class Generator {
 
         document.appendln("""
 \documentclass[12pt]{article}
-    \input{SetupData/usepackage}
-    \begin{document}
+\input{SetupData/usepackage}
+\begin{document}
     \setTitel{${fileName}}
     \input{SetupData/pagesetup}
     """.trimIndent())
+
+        exercisesFolder.mkdir()
     }
 
     private fun endDocument() {

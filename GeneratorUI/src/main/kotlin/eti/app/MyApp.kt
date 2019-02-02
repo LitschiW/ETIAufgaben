@@ -2,6 +2,7 @@ package eti.app
 
 import eti.ExerciseDirectory
 import eti.Generator
+import eti.data.*
 import eti.view.MainView
 import javafx.stage.Stage
 import tornadofx.App
@@ -13,7 +14,10 @@ class MyApp : App(MainView::class, Styles::class) {
         stage.minWidth = 800.0
         super.start(stage)
 
-        val x = Generator()
-        x.generateDocument(mapOf(), 2, File("D:\\result.pdf"), saveTex = true)
+        val map = mutableMapOf<Topic, List<SubTopic>>()
+        for (topic in ExerciseDirectory.Topics) {
+            map[topic] = topic.SubTopics
+        }
+        Generator().generateDocument(map, 1, File("D:\\ExerciseX.pdf"), saveTex = true)
     }
 }

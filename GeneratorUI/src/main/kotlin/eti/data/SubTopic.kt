@@ -9,10 +9,23 @@ class SubTopic : File {
 
     val Exercises get() = exercises.toList()
 
-    constructor(pathname: String?) : super(pathname)
-    constructor(parent: String?, child: String?) : super(parent, child)
-    constructor(parent: File?, child: String?) : super(parent, child)
-    constructor(uri: URI?) : super(uri)
+    val parentTopic: Topic
+
+    constructor(parentTopic: Topic, pathname: String?) : super(pathname) {
+        this.parentTopic = parentTopic
+    }
+
+    constructor(parentTopic: Topic, parent: String?, child: String?) : super(parent, child) {
+        this.parentTopic = parentTopic
+    }
+
+    constructor(parentTopic: Topic, parent: File?, child: String?) : super(parent, child) {
+        this.parentTopic = parentTopic
+    }
+
+    constructor(parentTopic: Topic, uri: URI?) : super(uri) {
+        this.parentTopic = parentTopic
+    }
 
     init {
         //load exercises
@@ -29,10 +42,15 @@ class SubTopic : File {
 
         val builder = StringBuilder()
         val subTopicExercisesCount = minOf(exercises.size, maxCountOfExercises)
-        val numbs = List(exercises.size - 1) { i -> i }.shuffled()
+        val numbs = List(exercises.size) { i -> i }.shuffled()
 
         for (i in 0..(subTopicExercisesCount - 1)) {
-            builder.append(exercises[numbs[i]].readText() + "\n")
+            for (readLine in exercises[numbs[i]].readLines()) {
+                //filtering out comments
+                if (readLine.trimStart().startsWith('%') || readLine.isEmpty()) continue
+                val indexOfPercentage = readLine.indexOf('%', ignoreCase = true)
+                builder.appendln(readLine.substring(0, if (indexOfPercentage == -1) readLine.length else indexOfPercentage-1))
+            }
         }
         return builder.toString()
     }

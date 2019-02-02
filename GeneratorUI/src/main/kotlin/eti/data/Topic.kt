@@ -3,6 +3,7 @@ package eti.data
 import java.io.File
 import java.net.URI
 import kotlin.math.abs
+import kotlin.reflect.jvm.internal.impl.utils.DFS
 
 class Topic : File {
 
@@ -27,10 +28,9 @@ class Topic : File {
         subTopics = mutableListOf()
         looseExercises = mutableListOf()
         for (file in listFiles()) {
-            if (file.isDirectory) subTopics.add(SubTopic(file.absolutePath))
+            if (file.isDirectory) subTopics.add(SubTopic(this,file.absolutePath))
             else if (file.isFile && file.extension == "tex") looseExercises.add(Exercise(file.absolutePath))
         }
-        var x = 5
     }
 
     fun getHint(): String {
@@ -42,11 +42,11 @@ class Topic : File {
 
     private fun genBuilder() = StringBuilder("\\aufgabenbereich{$name}\n${getHint()}\n")
 
-    fun generateText(subtopics: Collection<String>, maxNumOfExercisesPerSubtopic: Int = Int.MAX_VALUE): String {
+    fun generateText(subtopics: Collection<SubTopic>, maxNumOfExercisesPerSubtopic: Int = Int.MAX_VALUE): String {
         val builder = genBuilder()
 
         for (subTopic in this.subTopics) {
-            if (subtopics.contains(subTopic.name)) {
+            if (subTopic.parentTopic == this) {
                 builder.appendln(subTopic.getExercisesText(maxNumOfExercisesPerSubtopic))
             }
         }
@@ -56,7 +56,7 @@ class Topic : File {
     fun generateText(NumberOfSubTopics: Int = Int.MAX_VALUE, maxNumOfExercisesPerSubtopic: Int = Int.MAX_VALUE): String {
         val builder = genBuilder()
         val targetCount = minOf(subTopics.size, NumberOfSubTopics)
-        val indexes = List(subTopics.size - 1) { i -> i }.shuffled()
+        val indexes = List(subTopics.size) { i -> i }.shuffled()
 
         for (i in (0..(targetCount - 1))) {
             builder.appendln(subTopics[indexes[i]].getExercisesText(maxNumOfExercisesPerSubtopic))

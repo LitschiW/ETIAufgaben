@@ -49,6 +49,10 @@ object ExerciseDirectory {
     fun getTopicsFromNames(names: Collection<String>): List<Topic> {
         return topics.filter { topic -> names.contains(topic.name) }
     }
+
+    fun getTopicFromName(name: String): Topic? {
+        return topics.find { topic -> topic.name == name }
+    }
 }
 
 
