@@ -23,6 +23,8 @@
 \usepackage{tikz-timing}
 \usetikzlibrary{shadows.blur,automata,arrows}
 
+
+
 \renewcommand\thesubsection{\alph{subsection})}
 \renewcommand\thesubsubsection{\hspace*{0.3cm}\roman{subsubsection})}
 
@@ -64,7 +66,7 @@
 \newcommand{\aufgabenbereich}[1]{\stepcounter{mysection} \setcounter{subsection}{0}
 	\section*{Aufgabenbereich \arabic{mysection}: #1}}
 
-\newcommand{hint}[1]{
+\newcommand{\hint}[1]{
 	\noindent
 	\begin{minipage}[c]{0.85\textwidth}
 		#1
