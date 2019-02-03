@@ -1,8 +1,5 @@
-package eti
+package eti.data
 
-import eti.data.Exercise
-import eti.data.SubTopic
-import eti.data.Topic
 import java.io.File
 import java.nio.file.Paths
 
@@ -28,8 +25,8 @@ object ExerciseDirectory {
                 rootFile = files.find { file -> file.name == "Aufgaben" }!!
         }
 
-        this.rootFile = rootFile
-        for (file in this.rootFile.listFiles()) {
+        ExerciseDirectory.rootFile = rootFile
+        for (file in ExerciseDirectory.rootFile.listFiles()) {
             if (!file.isDirectory) continue
 
             val newTopic = Topic(file.absolutePath)
