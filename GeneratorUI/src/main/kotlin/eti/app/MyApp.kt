@@ -1,6 +1,6 @@
 package eti.app
 
-import eti.ExerciseDirectory
+import eti.data.ExerciseDirectory
 import eti.Generator
 import eti.data.*
 import eti.view.MainView

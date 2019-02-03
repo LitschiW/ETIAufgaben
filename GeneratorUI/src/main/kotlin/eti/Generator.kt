@@ -2,28 +2,22 @@ package eti
 
 import eti.data.SubTopic
 import eti.data.Topic
-import java.io.File
+import java.io.*
 import java.nio.file.Paths
-import java.io.InputStreamReader
-import java.io.BufferedReader
-
-/**
- * max be used later to switch latex generator away from pdfLaTeX
- * */
-enum class PdfGenerator {
-    PDFLaTeX,
-    LuaLaTeX,
-    XeLaTeX,
-    LaTex
-}
 
 class Generator {
 
+    //Directories used to store latex docs
     private val document = StringBuilder()
     private val tempDir: File = createTempDir()
-    private val setupFolder = File(tempDir.absolutePath + "\\SetupData\\")
-    private val exercisesFolder = File(tempDir.absolutePath + "\\Aufgaben\\")
+    private val setupDir = File(tempDir.absolutePath + "\\SetupData\\")
+    private val exercisesDir = File(tempDir.absolutePath + "\\Aufgaben\\")
     private val repoRoot: File
+
+    //Streams (Output)
+    private var out = PipedOutputStream()
+    private var writer = out.writer()
+    var inputStream = PipedInputStream(out)
 
     init {
         val root = File(Paths.get("").toAbsolutePath().toString())
@@ -54,7 +48,7 @@ class Generator {
         //iterate over selected Topics and Subtopics
         for ((topic, subtopics) in topics) {
             //start new partial document for topic
-            val topicDoc = File(exercisesFolder.absolutePath + "\\${topic.nameWithoutExtension.replace(Regex("[ $\"{}]"),"")}.tex")
+            val topicDoc = File(exercisesDir.absolutePath + "\\${topic.nameWithoutExtension.replace(Regex("[ $\"{}]"), "")}.tex")
 //            if(!topicDoc.createNewFile()) {
 // //may handle temp file already existing
 //            }
@@ -105,18 +99,19 @@ class Generator {
         //create command...
         val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
 
+        writer.write("Starting latex compiler with:\n")
+        writer.write("$command\n")
+
         val p = ProcessBuilder(command.split(' '))
                 .directory(tempDir)
                 .start() //..and run it
-        val stdInput = BufferedReader(InputStreamReader(p.inputStream))
 
+        // read the output from the command (input into this program)
+        val stdInput = p.inputStream.bufferedReader()
 
-        // read the output from the command
-        println("Here is the standard output of the command:\n")
-        var s: String?
         do {
-            s = stdInput.readLine()
-            System.out.println(s)
+            val s = stdInput.readLine()
+            if (s != null) writer.apply { write(s); flush() }
         } while ((s) != null)
     }
 
@@ -127,7 +122,7 @@ class Generator {
             x = x.parentFile.parentFile
             x = x.listFiles().find { file -> file.name == "SetupData" }!!
         }
-        x.copyRecursively(setupFolder, true)
+        x.copyRecursively(setupDir, true)
 
         document.appendln("""
 \documentclass[12pt]{article}
@@ -137,7 +132,7 @@ class Generator {
     \input{SetupData/pagesetup}
     """.trimIndent())
 
-        exercisesFolder.mkdir()
+        exercisesDir.mkdir()
     }
 
     private fun endDocument() {
