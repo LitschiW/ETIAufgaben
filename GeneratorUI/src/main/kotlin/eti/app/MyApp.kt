@@ -7,6 +7,9 @@ import eti.view.MainView
 import javafx.stage.Stage
 import tornadofx.App
 import java.io.File
+import kotlinx.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MyApp : App(MainView::class, Styles::class) {
     override fun start(stage: Stage) {
@@ -18,6 +21,16 @@ class MyApp : App(MainView::class, Styles::class) {
         for (topic in ExerciseDirectory.Topics) {
             map[topic] = topic.SubTopics
         }
-        Generator().generateDocument(map, 1, File("D:\\ExerciseX.pdf"), saveTex = true)
+
+        val gen = Generator()
+        val out = gen.inputStream.bufferedReader()
+
+        GlobalScope.launch { gen.generateDocument(map, 1, File("D:\\ExerciseX.pdf"), saveTex = true) }
+
+        do {
+            val s = out.readLine()
+            if(s!=null)println(s)
+        } while (s != null)
+        println("Done Main")
     }
 }

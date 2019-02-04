@@ -53,14 +53,18 @@ class Generator {
 // //may handle temp file already existing
 //            }
 
+            writeOutput("generating Text for topic \"${topic.nameWithoutExtension}\"...\n")
             //let the topic generate its text
             val topicText = topic.generateText(subtopics, maxNumOfExercisesPerSubtopic)
 
+            writeOutput("writing Text to file ${topicDoc.absolutePath}\n")
             //add subtopics/exercise text to partial document
             topicDoc.appendText(topicText)
 
+            writeOutput("appending text to document\n")
             // \include tex file into mainDocument
             document.appendln("""      \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
+            writeOutput("Done..\n")
         }
         //end main document
         endDocument()
@@ -70,23 +74,36 @@ class Generator {
         tempDir.deleteRecursively()
 //notify finished (? look up kotlin event system)
 
+        out.close()
     }
 
     private fun generatePDF(targetFile: File, saveTex: Boolean) {
         //save file
         val latexFile = File(tempDir.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
+        writeOutput("saving generated text to ${latexFile.absolutePath}\n")
         latexFile.writeText(document.toString())
+        writeOutput("Done..\n")
 
         //if saveTex: copy result's tex structure into the targetFile's folder
         if (saveTex) {
+            writeOutput("save tex files is enabled.\nCopying project files to target location $targetFile.absolutePath.removeSuffix(\".pdf\"))\n")
             tempDir.copyRecursively(File(targetFile.absolutePath.removeSuffix(".pdf")), true)
+            writeOutput("Done..\n")
         }
 
+        writeOutput("starting latex compiler...\n")
         //call command to trigger latex interpreter
-        interpretLatex(latexFile) //command will be run synchronously
+        if (compileLatex(latexFile)) //command will be run synchronously
+            writeOutput("\n\nPDF erfolgreich erstellt.\n")
+        else {
+            writeOutput("\n\nEin Fehler ist aufgetreten.\n Es wurde keine keine pdf erstellt\n")
+            tempDir.deleteRecursively()
+            return
+        }
 
         //if saveTex:  copy pdf in targetFile's folder
         val pdfFile = File(tempDir.absolutePath + "\\${targetFile.name}")
+        writeOutput("moving pdf-file from output to target file/folder\n")
         if (saveTex) {
             pdfFile.copyTo(File(targetFile.absolutePath.removeSuffix(".pdf") + "\\${targetFile.name}"))
         } else {
@@ -95,12 +112,12 @@ class Generator {
         }
     }
 
-    private fun interpretLatex(latexFile: File) {
+    private fun compileLatex(latexFile: File): Boolean {
         //create command...
         val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
 
-        writer.write("Starting latex compiler with:\n")
-        writer.write("$command\n")
+        writeOutput("Starting latex compiler with:\n")
+        writeOutput("$command\n")
 
         val p = ProcessBuilder(command.split(' '))
                 .directory(tempDir)
@@ -111,18 +128,25 @@ class Generator {
 
         do {
             val s = stdInput.readLine()
-            if (s != null) writer.apply { write(s); flush() }
+//detect error here
+            if (s != null) writer.apply { write(s + "\n"); flush() }
         } while ((s) != null)
+
+        return true
     }
 
     private fun startDocument(fileName: String) {
+        writeOutput("Starting...\n")
         //copy SetupData to tempDir
         var x = File(Paths.get("SetupData").toAbsolutePath().toString())
         if (!x.exists()) {//find folder if we are debugging
             x = x.parentFile.parentFile
             x = x.listFiles().find { file -> file.name == "SetupData" }!!
         }
+        writeOutput("fond SetupData at ${x.absolutePath}\n")
+        writeOutput("copy SetupData to ${setupDir.absolutePath}\n")
         x.copyRecursively(setupDir, true)
+        writeOutput("Done..\n")
 
         document.appendln("""
 \documentclass[12pt]{article}
@@ -132,7 +156,9 @@ class Generator {
     \input{SetupData/pagesetup}
     """.trimIndent())
 
+        writeOutput("Created document start\n")
         exercisesDir.mkdir()
+        writeOutput("created directory for Exercises\n")
     }
 
     private fun endDocument() {
@@ -140,5 +166,10 @@ class Generator {
 \end{document}
 %this document was automatically generated
         """.trimIndent())
+        writeOutput("finished creating of the document text\n")
+    }
+
+    private fun writeOutput(text: String) {
+        writer.apply { write(text);flush() }
     }
 }
