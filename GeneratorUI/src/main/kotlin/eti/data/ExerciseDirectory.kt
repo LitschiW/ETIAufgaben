@@ -27,7 +27,7 @@ object ExerciseDirectory {
 
         ExerciseDirectory.rootFile = rootFile
         for (file in ExerciseDirectory.rootFile.listFiles()) {
-            if (!file.isDirectory) continue
+            if (!file.isDirectory||file.nameWithoutExtension.startsWith("_minted")) continue
 
             val newTopic = Topic(file.absolutePath)
             topics.add(newTopic)

@@ -30,7 +30,6 @@ class SubTopic : File {
     init {
         //load exercises
         for (file in listFiles()) {
-            println(file.extension)
             if (file.extension == "tex") {
                 exercises.add(Exercise(file.absolutePath))
             }
@@ -49,7 +48,7 @@ class SubTopic : File {
                 //filtering out comments
                 if (readLine.trimStart().startsWith('%') || readLine.isEmpty()) continue
                 val indexOfPercentage = readLine.indexOf('%', ignoreCase = true)
-                builder.appendln(readLine.substring(0, if (indexOfPercentage == -1) readLine.length else indexOfPercentage-1))
+                builder.appendln(readLine.substring(0, if (indexOfPercentage == -1) readLine.length else indexOfPercentage - 1))
             }
         }
         return builder.toString()
