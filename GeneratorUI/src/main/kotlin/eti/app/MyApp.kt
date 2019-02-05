@@ -1,15 +1,18 @@
 package eti.app
 
-import eti.data.ExerciseDirectory
 import eti.Generator
-import eti.data.*
+import eti.data.ExerciseDirectory
+import eti.data.SubTopic
+import eti.data.Topic
 import eti.view.MainView
 import javafx.stage.Stage
-import tornadofx.App
-import java.io.File
-import kotlinx.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import tornadofx.*
+import java.io.File
+import kotlin.collections.List
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 class MyApp : App(MainView::class, Styles::class) {
     override fun start(stage: Stage) {
