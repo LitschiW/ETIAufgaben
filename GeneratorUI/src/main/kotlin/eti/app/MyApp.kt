@@ -6,18 +6,13 @@ import eti.data.SubTopic
 import eti.data.Topic
 import eti.view.MainView
 import javafx.stage.Stage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import tornadofx.*
-import java.io.File
-import kotlin.collections.List
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 class MyApp : App(MainView::class, Styles::class) {
     override fun start(stage: Stage) {
-        stage.height = 500.0
-        stage.width = 800.0
+        stage.height = 580.0
+        stage.width = 900.0
         super.start(stage)
 
         val map = mutableMapOf<Topic, List<SubTopic>>()
@@ -28,12 +23,12 @@ class MyApp : App(MainView::class, Styles::class) {
         val gen = Generator()
         val out = gen.inputStream.bufferedReader()
 
- /*      GlobalScope.launch { gen.generateDocument(map, 1, File("D:\\ExerciseX.pdf"), saveTex = true) }
+        /*      GlobalScope.launch { gen.generateDocument(map, 1, File("D:\\ExerciseX.pdf"), saveTex = true) }
 
-        do {
-            val s = out.readLine()
-            if(s!=null)println(s)
-        } while (s != null)
-        println("Done Main")*/
+               do {
+                   val s = out.readLine()
+                   if(s!=null)println(s)
+               } while (s != null)
+               println("Done Main")*/
     }
 }

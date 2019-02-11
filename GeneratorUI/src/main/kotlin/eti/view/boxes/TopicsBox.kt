@@ -11,13 +11,12 @@ class TopicsBox : View() {
         }
         scrollpane {
             listview<Topic> {
-
             }
             vboxConstraints {
                 margin = Insets(0.0, 0.0, 20.0, 20.0)
-                minWidth = 100.0
+                minWidth = 230.0
             }
-
+            isFitToWidth = true
         }
     }
 }

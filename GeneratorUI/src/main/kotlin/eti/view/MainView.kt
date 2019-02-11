@@ -1,6 +1,5 @@
 package eti.view
 
-import javafx.scene.layout.Priority
 import tornadofx.*
 
 class MainView : View("ETI Generator") {
@@ -14,6 +13,6 @@ class MainView : View("ETI Generator") {
             }
 
     init {
-        boxHolder.root.hgrow = Priority.ALWAYS
+        // boxHolder.root.hgrow = Priority.ALWAYS
     }
 }
