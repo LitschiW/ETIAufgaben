@@ -8,9 +8,10 @@ import eti.view.boxes.TopicsBox
 import javafx.geometry.Pos
 import tornadofx.*
 
-class BoxHolder : View(), OptionsObserver {
+class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), OptionsObserver {
     override fun onOptionschanged(opt: Options) {
-
+        optionsObserver?.onOptionschanged(opt)
+        subTopicsBox.root.isDisable = opt.randomSubTopics
     }
 
     val topicBox = TopicsBox()

@@ -23,6 +23,20 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
         alignment = Pos.BASELINE_RIGHT
         hboxConstraints { marginRight = 10.0 }
     }.apply { textProperty().addListener(this@OptionsBox) }
+    val subTopicCountBox = textfield("2") {
+        maxWidth = 40.0
+        minWidth = 40.0
+        alignment = Pos.BASELINE_RIGHT
+        hboxConstraints { marginRight = 10.0 }
+    }.apply { textProperty().addListener(this@OptionsBox) }
+
+    var subTopicCountBoxHolder = hbox {
+        label("max. #Subaufgabenbereiche") {
+            paddingAll = optionsPadding
+        }
+        spacer { }
+        add(subTopicCountBox)
+    }.apply { visibleProperty().set(false) }
 
     override val root = vbox {
         label("Optionen") {
@@ -39,6 +53,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
                 spacer { }
                 add(subTopicExerciseCountBox)
             }
+            add(subTopicCountBoxHolder)
             vboxConstraints {
                 margin = Insets(0.0, 20.0, 20.0, 20.0)
                 vgrow = Priority.ALWAYS
@@ -55,6 +70,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
     }
 
     private fun onOptionsChanged() {
+        subTopicCountBoxHolder.isVisible = box3.isChecked()
         optionsObserver.onOptionschanged(Options(
                 box1.isChecked(),
                 box2.isChecked(),
