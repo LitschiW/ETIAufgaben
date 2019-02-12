@@ -1,6 +1,7 @@
 package eti.data
 
-data class Options(val saveLatex: Boolean,
-                            val generateAnsweres: Boolean,
-                            val randomSubTopics: Boolean,
-                            val subTopicExerciseCount: Int)
+data class Options(val saveLatex: Boolean = false,
+                   val generateAnswers: Boolean =false,
+                   val randomSubTopics: Boolean =false,
+                   val subTopicExerciseCount: Int = 2,
+                   val subTopicsCount: Int = -1)

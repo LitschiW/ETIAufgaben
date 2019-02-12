@@ -1,12 +1,14 @@
 package eti.view
 
+import eti.data.Options
+import eti.data.OptionsObserver
 import javafx.geometry.Insets
 import javafx.scene.layout.Priority
 import tornadofx.*
 import java.io.File
 import java.nio.file.Paths
 
-class OutputSelector : View() {
+class OutputSelector : View(), OptionsObserver {
     override val root = vbox {
         hbox {
             textfield {
@@ -50,5 +52,9 @@ class OutputSelector : View() {
                 nb++
         }
         return "$currDir${File.separator}AB_$nb.pdf"
+    }
+    override fun onOptionschanged(opt: Options) {
+        //handle switch from folder to file (save latex project or not)
+
     }
 }

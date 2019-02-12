@@ -65,17 +65,25 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
         }
     }
 
+    @ExperimentalUnsignedTypes
     override fun changed(observable: ObservableValue<out Any>?, oldValue: Any?, newValue: Any?) {
         onOptionsChanged()
     }
 
+    @ExperimentalUnsignedTypes
     private fun onOptionsChanged() {
         subTopicCountBoxHolder.isVisible = box3.isChecked()
+        val text1 = subTopicExerciseCountBox.text
+        val text2 = subTopicCountBox.text
+        val subTopicExerciseCount = if (text1.toUIntOrNull() == null) Int.MAX_VALUE else text1.toInt()
+        val subTopicCount = if (text2.toUIntOrNull() == null || !box3.isChecked()) -1 else text2.toInt()
+
         optionsObserver.onOptionschanged(Options(
                 box1.isChecked(),
                 box2.isChecked(),
                 box3.isChecked(),
-                subTopicExerciseCountBox.text.toIntOrNull() ?: Int.MAX_VALUE))
+                subTopicExerciseCount,
+                subTopicCount))
     }
 }
 
