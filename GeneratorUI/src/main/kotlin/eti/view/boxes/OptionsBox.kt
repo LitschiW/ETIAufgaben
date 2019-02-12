@@ -1,25 +1,28 @@
 package eti.view.boxes
 
-
+import eti.data.Options
+import eti.data.OptionsObserver
+import eti.extensions.isChecked
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class OptionsBox : View() {
+class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeListener<Any> {
     val optionsPadding = 5.0
 
-    val box1 = checkbox("speichere .tex project") { paddingAll = optionsPadding }
-    val box2 = checkbox("generiere Antworten") { paddingAll = optionsPadding }
-    val box3 = checkbox("zufällige Subaufgabenbereiche") { paddingAll = optionsPadding }
+    val box1 = checkbox("speichere LaTeX Projekt") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
+    val box2 = checkbox("generiere Antworten") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
+    val box3 = checkbox("zufällige Subaufgabenbereiche") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
     val subTopicExerciseCountBox = textfield("2") {
         maxWidth = 40.0
         minWidth = 40.0
         alignment = Pos.BASELINE_RIGHT
         hboxConstraints { marginRight = 10.0 }
-    }
-
+    }.apply { textProperty().addListener(this@OptionsBox) }
 
     override val root = vbox {
         label("Optionen") {
@@ -36,8 +39,6 @@ class OptionsBox : View() {
                 spacer { }
                 add(subTopicExerciseCountBox)
             }
-
-
             vboxConstraints {
                 margin = Insets(0.0, 20.0, 20.0, 20.0)
                 vgrow = Priority.ALWAYS
@@ -49,4 +50,16 @@ class OptionsBox : View() {
         }
     }
 
+    override fun changed(observable: ObservableValue<out Any>?, oldValue: Any?, newValue: Any?) {
+        onOptionsChanged()
+    }
+
+    private fun onOptionsChanged() {
+        optionsObserver.onOptionschanged(Options(
+                box1.isChecked(),
+                box2.isChecked(),
+                box3.isChecked(),
+                subTopicExerciseCountBox.text.toIntOrNull() ?: Int.MAX_VALUE))
+    }
 }
+

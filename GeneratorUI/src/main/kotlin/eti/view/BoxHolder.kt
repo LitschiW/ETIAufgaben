@@ -1,15 +1,21 @@
 package eti.view
 
+import eti.data.Options
+import eti.data.OptionsObserver
 import eti.view.boxes.OptionsBox
 import eti.view.boxes.SubTopicsBox
 import eti.view.boxes.TopicsBox
 import javafx.geometry.Pos
 import tornadofx.*
 
-class BoxHolder : View() {
+class BoxHolder : View(), OptionsObserver {
+    override fun onOptionschanged(opt: Options) {
+
+    }
+
     val topicBox = TopicsBox()
     val subTopicsBox = SubTopicsBox()
-    val optionsBox = OptionsBox()
+    val optionsBox = OptionsBox(this)
 
     override val root = gridpane {
         alignment = Pos.TOP_CENTER
