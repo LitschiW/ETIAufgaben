@@ -1,46 +1,44 @@
 package eti.view
 
+import javafx.geometry.Insets
 import javafx.scene.layout.Priority
 import tornadofx.*
 import java.io.File
 import java.nio.file.Paths
 
 class OutputSelector : View() {
-    override val root = gridpane {
-        textfield {
-            apply {
-                text = getNextFilePath()
-            }
-            gridpaneConstraints {
-                columnIndex = 0
-                rowIndex = 0
-                columnSpan = 2
+    override val root = vbox {
+        hbox {
+            textfield {
                 hgrow = Priority.ALWAYS
-                fillWidth =true
+                hboxConstraints {
+                    marginLeft = 5.0
+                }
+                apply {
+                    text = getNextFilePath()
+                }
+            }
+            button(" ... ") {
+                hboxConstraints {
+                    marginLeftRight(5.0)
+                }
             }
         }
-        button(" ... ") {
-            gridpaneConstraints {
-                columnIndex = 3
-                rowIndex = 0
-                fillWidth =true
+        borderpane {
+            left = button("Quit") {
+                borderpaneConstraints {
+                    margin = Insets(5.0)
+                }
             }
-            hgrow = Priority.ALWAYS
-        }
-        button("Quit") {
-            gridpaneConstraints {
-                columnIndex = 0
-                rowIndex = 1
+            right = button("Save") {
+                borderpaneConstraints {
+                    margin = Insets(5.0)
+                }
             }
         }
-        button("Save") {
-            gridpaneConstraints {
-                columnIndex = 3
-                rowIndex = 1
-            }
+        borderpaneConstraints {
+            margin = Insets(5.0)
         }
-        hgrow = Priority.ALWAYS
-        paddingAll=5
         minHeight = 50.0
     }
 
@@ -51,6 +49,6 @@ class OutputSelector : View() {
             if (file.isFile && file.name == "AB_$nb")
                 nb++
         }
-        return "$currDir\\AB_$nb.pdf"
+        return "$currDir${File.separator}AB_$nb.pdf"
     }
 }
