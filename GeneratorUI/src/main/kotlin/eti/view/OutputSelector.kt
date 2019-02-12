@@ -1,44 +1,46 @@
 package eti.view
 
-import javafx.geometry.Insets
 import javafx.scene.layout.Priority
 import tornadofx.*
 import java.io.File
 import java.nio.file.Paths
 
 class OutputSelector : View() {
-    override val root = vbox {
-        hbox {
-            textfield {
+    override val root = gridpane {
+        textfield {
+            apply {
+                text = getNextFilePath()
+            }
+            gridpaneConstraints {
+                columnIndex = 0
+                rowIndex = 0
+                columnSpan = 2
                 hgrow = Priority.ALWAYS
-                hboxConstraints {
-                    marginLeft = 5.0
-                }
-                apply {
-                    text = getNextFilePath()
-                }
-            }
-            button(" ... ") {
-                hboxConstraints {
-                    marginLeftRight(5.0)
-                }
+                fillWidth =true
             }
         }
-        borderpane {
-            left = button("Quit") {
-                borderpaneConstraints {
-                    margin = Insets(5.0)
-                }
+        button(" ... ") {
+            gridpaneConstraints {
+                columnIndex = 3
+                rowIndex = 0
+                fillWidth =true
             }
-            right = button("Save") {
-                borderpaneConstraints {
-                    margin = Insets(5.0)
-                }
+            hgrow = Priority.ALWAYS
+        }
+        button("Quit") {
+            gridpaneConstraints {
+                columnIndex = 0
+                rowIndex = 1
             }
         }
-        borderpaneConstraints {
-            margin = Insets(5.0)
+        button("Save") {
+            gridpaneConstraints {
+                columnIndex = 3
+                rowIndex = 1
+            }
         }
+        hgrow = Priority.ALWAYS
+        paddingAll=5
         minHeight = 50.0
     }
 

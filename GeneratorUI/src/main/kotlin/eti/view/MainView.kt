@@ -10,9 +10,6 @@ class MainView : View("ETI Generator") {
             borderpane {
                 center = boxHolder.root
                 bottom = outPut.root
-            }
 
-    init {
-        // boxHolder.root.hgrow = Priority.ALWAYS
-    }
+            }
 }

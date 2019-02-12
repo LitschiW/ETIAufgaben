@@ -2,8 +2,6 @@ package eti.data
 
 import java.io.File
 import java.net.URI
-import kotlin.math.abs
-import kotlin.reflect.jvm.internal.impl.utils.DFS
 
 class Topic : File {
 
@@ -28,7 +26,7 @@ class Topic : File {
         subTopics = mutableListOf()
         looseExercises = mutableListOf()
         for (file in listFiles()) {
-            if (file.isDirectory) subTopics.add(SubTopic(this,file.absolutePath))
+            if (file.isDirectory) subTopics.add(SubTopic(this, file.absolutePath))
             else if (file.isFile && file.extension == "tex") looseExercises.add(Exercise(file.absolutePath))
         }
     }
