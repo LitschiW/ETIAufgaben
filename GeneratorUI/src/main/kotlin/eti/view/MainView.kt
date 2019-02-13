@@ -17,7 +17,7 @@ class MainView : View("ETI Generator"), OptionsObserver {
 
     override val root =
             borderpane {
-                center = boxHolder.root
+                top = boxHolder.root
                 bottom = outPut.root
             }
 }

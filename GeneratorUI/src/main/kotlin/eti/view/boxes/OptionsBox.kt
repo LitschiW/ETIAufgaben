@@ -31,7 +31,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
     }.apply { textProperty().addListener(this@OptionsBox) }
 
     var subTopicCountBoxHolder = hbox {
-        label("max. #Subaufgabenbereiche") {
+        label("max. #Unteraufgabenbereiche") {
             paddingAll = optionsPadding
         }
         spacer { }
@@ -47,7 +47,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
             //add(box2)
             add(box3)
             hbox {
-                label("max. #Subaufgaben") {
+                label("max. #Unteraufgaben") {
                     paddingAll = optionsPadding
                 }
                 spacer { }
