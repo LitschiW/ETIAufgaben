@@ -57,7 +57,7 @@ class SubTopicsBox : View(), TopicSelectorListener {
         val selectedSubTopics = selected[topic]
         display.add(label(topic.name) { font = Font("Arial", 14.5); paddingBottom = 5; paddingTop = 5 })
         for (subTopic in topic.SubTopics) {
-            display.add(checkbox(subTopic.nameWithoutExtension) {
+            display.add(checkbox(subTopic.nameWithoutExtension + " (${subTopic.Exercises.size})") {
                 paddingAll = 5
                 selectedProperty().set(selectedSubTopics != null && selectedSubTopics.contains(subTopic) || selectedSubTopics == null)
                 selectedProperty().addListener(

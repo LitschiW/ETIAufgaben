@@ -48,7 +48,12 @@ class Generator {
 //one may want to do this async and lock the main screen for the duration
 
         //check Arguments for errors
-        checkArguments(topics, targetFile, options)
+        try {
+            checkArguments(topics, targetFile, options)
+        } catch (e: Exception) {
+            out.close()
+            throw e
+        }
 
         //begin main document
         startDocument()
@@ -189,7 +194,7 @@ class Generator {
             x = x.parentFile.parentFile
             x = x.listFiles().find { file -> file.name == "SetupData" }!!
         }
-        writeOutput("fond SetupData at ${x.absolutePath}\n")
+        writeOutput("found SetupData at ${x.absolutePath}\n")
         writeOutput("copy SetupData to ${setupDir.absolutePath}\n")
         x.copyRecursively(setupDir, true)
         writeOutput("Done..\n")

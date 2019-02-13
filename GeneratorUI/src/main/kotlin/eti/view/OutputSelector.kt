@@ -78,12 +78,13 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
                     }
                     if (target != null) {
                         if (target.extension == "" && !currentOptions.saveLatex) target = File(target.absolutePath + ".pdf")//append .pdf extension if its missing
-                        this@OutputSelector.targetFile = target //copy over to local var
 
                         //copy path sections into textFields
                         if (currentOptions.saveLatex) {
                             pathField.text = target.absolutePath
+                            targetFile = File(Paths.get(target.absolutePath, fileField.text).toUri())//copy over to local var
                         } else {
+                            targetFile = target
                             pathField.text = target.absolutePath.removeSuffix(target.name)
                             fileField.text = target.name
                         }
