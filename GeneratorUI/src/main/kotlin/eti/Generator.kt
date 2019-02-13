@@ -15,11 +15,11 @@ class Generator {
     //Directories used to store latex docs
     private val document = StringBuilder()
     private val tempDir: File = createTempDir()
-    private val setupDir = File(tempDir.absolutePath + "\\SetupData\\")
-    private val exercisesDir = File(tempDir.absolutePath + "\\Aufgaben\\")
+    private val setupDir = File(Paths.get(tempDir.absolutePath, "SetupData").toUri())
+    private val exercisesDir = File(Paths.get(tempDir.absolutePath, "Aufgaben").toUri())
     private val repoRoot: File
 
-    private val notUseableCharsForLatex = "[ $\"{}]"
+    private val notUsableCharsForLatex = "[ $\"{}]"
 
 
     //Settings
@@ -60,7 +60,7 @@ class Generator {
         for ((topic, subtopics) in topics) {
             //start new partial document for topic and
             //remove not LaTeX conform symbols from .tex File's name
-            val topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUseableCharsForLatex), "")}.tex")
+            val topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
 //            if(!topicDoc.createNewFile()) {
 // //may handle temp file already existing
 //            }
