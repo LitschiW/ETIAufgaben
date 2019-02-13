@@ -1,118 +1,48 @@
 package eti.view
 
-import javafx.geometry.Insets
-import javafx.geometry.Pos
-import javafx.scene.layout.Priority
-import javafx.scene.text.Font
+import eti.Generator
+import eti.data.Options
+import eti.data.OptionsObserver
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import tornadofx.*
-import java.io.File
-import java.nio.file.Paths
 
-class MainView : View("ETI Generator") {
-    override val root =
-            borderpane {
-                top = gridpane {
-                    vbox {
-                        label("Aufgabentypen auswählen:") {
-                            font = Font(20.0)
-                            vboxConstraints {
-                                marginBottom = 5.0
-                            }
-                        }
-                        hbox {
-                            scrollpane {
-                                minHeight = 300.0
-                                minWidth = 200.0
-                                maxHeight = 300.0
-                                maxWidth = 200.0
-                                vbox {
-                                    /* example box
-                                  checkbox("2") {
-                                      font = Font(15.0)
-                                  vboxConstraints { margin= Insets(5.0) }
-                              }*/
-                                }
-                            }
-                            progressindicator {
-                                maxWidth = 28.0
-                                maxHeight = 28.0
-                                hboxConstraints {
-                                    marginLeft = 10.0
-                                }
-                            }
-                            vboxConstraints {
-                                marginLeft = 20.0
-                            }
-                        }
-                        gridpaneConstraints {
-                            columnRowIndex(0, 0)
-                            margin = Insets(15.0)
-                        }
-                    }
-                    hbox {
-                        label("max. Teilaufgabenanzahl") {
-                            font = Font(18.0)
-                        }
-                        textfield {
-                            alignment = Pos.BASELINE_RIGHT
-                            text = "2"
-                            font = Font(15.0)
-                            minWidth = 50.0
-                            maxWidth = 50.0
-                            hboxConstraints {
-                                marginLeft = 10.0
-                            }
-                        }
-                        gridpaneConstraints {
-                            columnRowIndex(1, 0)
-                            margin = Insets(15.0)
-                            marginTop = 50.0
-                        }
-                    }
-                }
-                bottom = vbox {
-                    hbox {
-                        textfield {
-                            hgrow = Priority.ALWAYS
-                            hboxConstraints {
-                                marginLeft=5.0
-                            }
-                            apply {
-                                text = getNextFilePath()
-                            }
-                        }
-                        button(" ... ") {
-                            hboxConstraints {
-                                marginLeftRight(5.0)
-                            }
-                        }
-                    }
-                    borderpane {
-                        left = button("Quit") {
-                            borderpaneConstraints {
-                                margin = Insets(5.0)
-                            }
-                        }
-                        right = button("Save") {
-                            borderpaneConstraints {
-                                margin = Insets(5.0)
-                            }
-                        }
-                    }
-                    borderpaneConstraints {
-                        margin = Insets(5.0)
-                    }
-                }
+class MainView : View("ETI Generator"), OptionsObserver {
+    private var currentOptions: Options = Options(false, false, false, 2, -1)
+
+    override fun onOptionschanged(opt: Options) {
+        currentOptions = opt
+        outPut.onOptionschanged(opt) //foreword event to outPutSelector
+    }
+
+    val outPut = OutputSelector().apply {
+        action {
+            val gen = Generator()
+            val output = gen.inputStream.bufferedReader()
+            val selection = boxHolder.getSelection()
+            val targetFile = this.getTarget()
+
+
+            GlobalScope.launch {
+                gen.generateDocument(selection,
+                        currentOptions.subTopicExerciseCount,
+                        targetFile,
+                        currentOptions.randomSubTopics,
+                        currentOptions.saveLatex)
             }
 
-
-    private fun getNextFilePath():String{
-        val currDir = File(Paths.get("").toAbsolutePath().toUri())
-        var nb = 0
-        for (file in currDir.listFiles()) {
-            if(file.isFile && file.name == "AB_$nb")
-                nb++
+            do {
+                val s = output.readLine()
+                if (s != null) println(s)
+            } while (s != null)
+            checkAndHandelPathExists()
         }
-        return "$currDir\\AB_$nb.pdf"
     }
+    val boxHolder = BoxHolder(this)
+
+    override val root =
+            borderpane {
+                top = boxHolder.root
+                bottom = outPut.root
+            }
 }

@@ -2,7 +2,9 @@ package eti
 
 import eti.data.SubTopic
 import eti.data.Topic
-import java.io.*
+import java.io.File
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.nio.file.Paths
 
 class Generator {
