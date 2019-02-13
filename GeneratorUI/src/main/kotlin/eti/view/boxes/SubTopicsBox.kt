@@ -13,7 +13,7 @@ class SubTopicsBox : View() {
             listview<SubTopic> {
             }
             vboxConstraints {
-                margin = Insets(0.0, 0.0, 20.0, 20.0)
+                marginLeft = 20.0
                 minWidth = 230.0
             }
             isFitToWidth = true

@@ -55,7 +55,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
             }
             add(subTopicCountBoxHolder)
             vboxConstraints {
-                margin = Insets(0.0, 20.0, 20.0, 20.0)
+                marginLeft = 20.0
                 vgrow = Priority.ALWAYS
             }
             background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
