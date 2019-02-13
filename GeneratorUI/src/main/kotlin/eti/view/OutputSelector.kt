@@ -19,6 +19,11 @@ import kotlin.system.exitProcess
 class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
     var currentOptions = Options()
     var targetFile: File = File(Paths.get(Paths.get("").toAbsolutePath().toString(), File.separator, getNextFileName()).toUri())
+    var saveAction = {}
+
+    fun action(op: () -> Unit) {
+        saveAction = op
+    }
 
     val hMargin = 3.0
 
@@ -95,7 +100,7 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
             }
             right = button("Save") {
                 action {
-                    TODO("fire save called event")
+                    saveAction()
                 }
             }
             val pad = 10
@@ -112,10 +117,10 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
         val currDir = File(Paths.get("").toAbsolutePath().toUri())
         var nb = 0
         for (file in currDir.listFiles()) {
-            if (file.isFile && file.name == "AB_$nb")
+            if (file.isFile && file.name == "AB$nb")
                 nb++
         }
-        return "AB_$nb.pdf"
+        return "AB$nb.pdf"
     }
 
     override fun onOptionschanged(opt: Options) {
@@ -138,11 +143,15 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
         checkAndHandelPathExists()
     }
 
-    private fun checkAndHandelPathExists() {
+    fun checkAndHandelPathExists() {
         val target = File(Paths.get(pathField.text, fileField.text).toUri())
         existsLabel.isVisible =
                 ((target.isFile && target.exists() && !currentOptions.saveLatex)
                         || (currentOptions.saveLatex && target.isDirectory && target.listFiles().any { file -> file.name == target.name + ".pdf" }))
         botpane?.right?.isDisable = existsLabel.isVisible //disable save button
+    }
+
+    fun getTarget(): File {
+        return targetFile
     }
 }

@@ -1,9 +1,6 @@
 package eti.view
 
-import eti.data.Options
-import eti.data.OptionsObserver
-import eti.data.Topic
-import eti.data.TopicSelectorListener
+import eti.data.*
 import eti.view.boxes.OptionsBox
 import eti.view.boxes.SubTopicsBox
 import eti.view.boxes.TopicsBox
@@ -22,7 +19,7 @@ class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), 
         add(optionsBox.root)
         minHeight = 350.0
         maxHeight = 350.0
-        alignment= Pos.TOP_CENTER
+        alignment = Pos.TOP_CENTER
     }
 
     override fun onTopicChanged(topic: Topic, checked: Boolean) {
@@ -32,5 +29,9 @@ class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), 
     override fun onOptionschanged(opt: Options) {
         optionsObserver?.onOptionschanged(opt)
         subTopicsBox.root.isDisable = opt.randomSubTopics
+    }
+
+    fun getSelection(): Map<Topic, List<SubTopic>> {
+        return subTopicsBox.getSelectedMap()
     }
 }

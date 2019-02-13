@@ -1,7 +1,10 @@
 package eti.view
 
+import eti.Generator
 import eti.data.Options
 import eti.data.OptionsObserver
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import tornadofx.*
 
 class MainView : View("ETI Generator"), OptionsObserver {
@@ -12,7 +15,29 @@ class MainView : View("ETI Generator"), OptionsObserver {
         outPut.onOptionschanged(opt) //foreword event to outPutSelector
     }
 
-    val outPut = OutputSelector()
+    val outPut = OutputSelector().apply {
+        action {
+            val gen = Generator()
+            val output = gen.inputStream.bufferedReader()
+            val selection = boxHolder.getSelection()
+            val targetFile = this.getTarget()
+
+
+            GlobalScope.launch {
+                gen.generateDocument(selection,
+                        currentOptions.subTopicExerciseCount,
+                        targetFile,
+                        currentOptions.randomSubTopics,
+                        currentOptions.saveLatex)
+            }
+
+            do {
+                val s = output.readLine()
+                if (s != null) println(s)
+            } while (s != null)
+            checkAndHandelPathExists()
+        }
+    }
     val boxHolder = BoxHolder(this)
 
     override val root =
