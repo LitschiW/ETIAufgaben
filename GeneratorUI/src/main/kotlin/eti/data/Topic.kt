@@ -2,6 +2,7 @@ package eti.data
 
 import java.io.File
 import java.net.URI
+import java.nio.file.Paths
 
 class Topic : File {
 
@@ -19,7 +20,7 @@ class Topic : File {
 
     init {
         //load hint file
-        val hintFile = File("$absolutePath\\hint.tex")
+        val hintFile = File(Paths.get(absolutePath, "hint.tex").toUri())
         hint = if (hintFile.exists()) hintFile else null
 
         //load subtopics
@@ -38,12 +39,12 @@ class Topic : File {
         else ""
     }
 
-    private fun genBuilder() = StringBuilder("\\aufgabenbereich{$name}\n${getHint()}\n")
+    private fun genBuilder() = StringBuilder("${File.separator}aufgabenbereich{$name}\n${getHint()}\n")
 
     fun generateText(subtopics: Collection<SubTopic>, maxNumOfExercisesPerSubtopic: Int = Int.MAX_VALUE): String {
         val builder = genBuilder()
 
-        for (subTopic in this.subTopics) {
+        for (subTopic in subtopics) {
             if (subTopic.parentTopic == this) {
                 builder.appendln(subTopic.getExercisesText(maxNumOfExercisesPerSubtopic))
             }

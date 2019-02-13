@@ -21,7 +21,6 @@ class Generator {
 
     private val notUsableCharsForLatex = "[ $\"{}]"
 
-
     //Settings
     private var targetFile: File? = null
     private var currentOptions: Options = Options()
@@ -34,15 +33,13 @@ class Generator {
 
     init {
         val root = File(Paths.get("").toAbsolutePath().toString())
-
         repoRoot = if (root.name == "GeneratorUI") root.parentFile else root
     }
 
     /**
      * @param topics Map that contains the list of topics (absolute paths) used as keys and references the used list of subtopics(names) as value to this key.
-     * @param maxNumOfSubExercises maximum number of subtopics loads for each topic, use Int.MAX_VALUE for everything.
      * @param targetFile output File for the pdf
-     * @param saveTex set this to true if the generated tex code should be saved into a folder.
+     * @param options provide options for the compiling here
      */
     @Synchronized
     fun generateDocument(topics: Map<Topic, List<SubTopic>>,
@@ -77,7 +74,7 @@ class Generator {
 
             writeOutput("appending text to document\n")
             // \include tex file into mainDocument
-            document.appendln("""      \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
+            document.appendln("""    \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
             writeOutput("Done..\n")
         }
         //end main document
