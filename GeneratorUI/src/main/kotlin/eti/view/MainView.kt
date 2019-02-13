@@ -22,13 +22,15 @@ class MainView : View("ETI Generator"), OptionsObserver {
             val selection = boxHolder.getSelection()
             val targetFile = this.getTarget()
 
-
             GlobalScope.launch {
-                gen.generateDocument(selection,
-                        currentOptions.subTopicExerciseCount,
-                        targetFile,
-                        currentOptions.randomSubTopics,
-                        currentOptions.saveLatex)
+                try {
+                    gen.generateDocument(selection,
+                            targetFile,
+                            currentOptions)
+                } catch (e: Exception) {
+                    println(e)
+                }
+
             }
 
             do {
