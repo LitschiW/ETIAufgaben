@@ -4,7 +4,7 @@ import eti.data.Options
 import eti.data.OptionsObserver
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.geometry.Insets
+import javafx.geometry.Pos
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
@@ -18,94 +18,119 @@ import kotlin.system.exitProcess
 
 class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
     var currentOptions = Options()
+    var targetFile: File = File(Paths.get(Paths.get("").toAbsolutePath().toString(), File.separator, getNextFileName()).toUri())
 
-    val textField = textfield {
-        hgrow = Priority.ALWAYS
+    val hMargin = 3.0
+
+    val pathField = textfield {
         hboxConstraints {
-            marginLeft = 5.0
+            marginLeftRight(hMargin)
+            hGrow = Priority.ALWAYS
         }
-        apply {
-            text = getNextFilePath()
-        }
-    }.apply {
+        maxWidth = 500.0
+        text = targetFile.parentFile.absolutePath + File.separator //sperator is optional, just for the looks
+        textProperty().addListener(this@OutputSelector)
+    }
+    val fileField = textfield {
+        text = targetFile.name
+        vboxConstraints { marginLeftRight(hMargin) }
         textProperty().addListener(this@OutputSelector)
     }
     val existsLabel = label("Am angegebenem Ort existiert bereits eine entsprechende Pdf.") {
         vboxConstraints {
             marginLeft = 20.0
         }
-    }.apply {
         visibleProperty().set(false)
         textFill = Color.RED
         font = Font("Arial", 12.0)
     }
     var botpane: BorderPane? = null
+
     override val root = vbox {
         hbox {
-            add(textField)
-            button(" ... ") {
-                hboxConstraints {
-                    marginLeftRight(5.0)
-                }
+            add(pathField)
+            vbox {
+                label("Projekt/Datei Name")
+                add(fileField)
             }
-                    .apply {
-                        action {
-                            val target = if (currentOptions.saveLatex) {
-                                DirectoryChooser().showDialog(currentStage)
-                            } else {
-                                FileChooser().showSaveDialog(currentStage)
-                            }
+            button("  ...  ") {
+                action {
+                    var target = if (currentOptions.saveLatex) {
+                        val dirChooser = DirectoryChooser()
+                        dirChooser.title = "Ordner wählen, in dem der Projektordner gespeichert werden soll:"
+                        if (targetFile.parentFile.isDirectory && targetFile.parentFile.exists()) dirChooser.initialDirectory = targetFile.parentFile
+                        else dirChooser.initialDirectory = File(Paths.get("").toString())
+                        dirChooser.showDialog(currentStage)
+                    } else {
+                        val pdfExtension = FileChooser.ExtensionFilter("PDF Datei", "*.pdf")
+                        val fileChooser = FileChooser()
+                        fileChooser.title = "Speichern unter..."
+                        fileChooser.initialDirectory = File(pathField.text)
+                        fileChooser.initialFileName = fileField.text
+                        fileChooser.extensionFilters.addAll(List(1) { pdfExtension })
+                        fileChooser.selectedExtensionFilter = pdfExtension
+                        fileChooser.showSaveDialog(currentStage)
+                    }
+                    if (target != null) {
+                        if (target.extension == "" && !currentOptions.saveLatex) target = File(target.absolutePath + ".pdf")//append .pdf extension if its missing
+                        this@OutputSelector.targetFile = target //copy over to local var
+
+                        //copy path sections into textFields
+                        if (currentOptions.saveLatex) {
+                            pathField.text = target.absolutePath
+                        } else {
+                            pathField.text = target.absolutePath.removeSuffix(target.name)
+                            fileField.text = target.name
                         }
                     }
+                }
+                vboxConstraints { marginLeftRight(hMargin) }
+            }
+            alignment = Pos.BOTTOM_CENTER
         }
         add(existsLabel)
         botpane = borderpane {
             left = button("Quit") {
-                borderpaneConstraints {
-                    margin = Insets(5.0)
-                }
-            }.apply { action { exitProcess(0) } }
+                action { exitProcess(0) }
+            }
             right = button("Save") {
-                borderpaneConstraints {
-                    margin = Insets(5.0)
-                }.apply {
-                    action {
-                        TODO("fire save called event")
-                    }
+                action {
+                    TODO("fire save called event")
                 }
             }
+            val pad = 10
+            padding = insets(0, pad, pad, pad)
         }
-        borderpaneConstraints {
-            margin = Insets(5.0)
-        }
-        minHeight = 50.0
+        alignment = Pos.CENTER
     }
 
     init {
         checkAndHandelPathExists()
     }
 
-    private fun getNextFilePath(): String {
+    private fun getNextFileName(): String {
         val currDir = File(Paths.get("").toAbsolutePath().toUri())
         var nb = 0
         for (file in currDir.listFiles()) {
             if (file.isFile && file.name == "AB_$nb")
                 nb++
         }
-        return "$currDir${File.separator}AB_$nb.pdf"
+        return "AB_$nb.pdf"
     }
 
     override fun onOptionschanged(opt: Options) {
-        currentOptions = opt
-
+        currentOptions = opt //update options
         //handle switch from folder to file (save latex project or not)
-        val text = textField.text
+        val text = fileField.text
         if (opt.saveLatex) {
-            textField.text = text.removeSuffix(".pdf")
+            fileField.text = text.removeSuffix(".pdf")
+            targetFile = File(targetFile.absolutePath.removeSuffix(".pdf"))
         } else {
-            textField.text =
-                    if (!text.endsWith(".pdf")) "$text.pdf"
-                    else text
+            fileField.text =
+                    if (!text.endsWith(".pdf")) {
+                        targetFile = File((targetFile.absolutePath + ".pdf"))
+                        "$text.pdf"
+                    } else text
         }
     }
 
@@ -114,10 +139,10 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
     }
 
     private fun checkAndHandelPathExists() {
-        val target = File(textField.text)
+        val target = File(Paths.get(pathField.text, fileField.text).toUri())
         existsLabel.isVisible =
                 ((target.isFile && target.exists() && !currentOptions.saveLatex)
                         || (currentOptions.saveLatex && target.isDirectory && target.listFiles().any { file -> file.name == target.name + ".pdf" }))
-        botpane?.right?.isDisable = existsLabel.isVisible
+        botpane?.right?.isDisable = existsLabel.isVisible //disable save button
     }
 }
