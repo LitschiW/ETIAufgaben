@@ -45,8 +45,6 @@ class Generator {
     fun generateDocument(topics: Map<Topic, List<SubTopic>>,
                          targetFile: File,
                          options: Options) {
-//one may want to do this async and lock the main screen for the duration
-
         //check Arguments for errors
         try {
             checkArguments(topics, targetFile, options)
@@ -62,10 +60,11 @@ class Generator {
         for ((topic, subtopics) in topics) {
             //start new partial document for topic and
             //remove not LaTeX conform symbols from .tex File's name
-            val topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
-//            if(!topicDoc.createNewFile()) {
-// //may handle temp file already existing
-//            }
+            var topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
+            var count = 1
+            while (!topicDoc.createNewFile()) {
+                topicDoc = File(topicDoc.absolutePath.removeSuffix(".tex") + "${count++}.tex")
+            }
 
             writeOutput("generating Text for topic \"${topic.nameWithoutExtension}\"...\n")
             //let the topic generate its text depending on the generation style
@@ -221,6 +220,6 @@ class Generator {
     }
 
     private fun writeOutput(text: String) {
-        writer.apply { write(text);flush() }
+        writer.apply { write(text);flush();}
     }
 }
