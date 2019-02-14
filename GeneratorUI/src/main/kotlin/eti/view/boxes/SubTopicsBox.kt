@@ -1,49 +1,35 @@
 package eti.view.boxes
 
+import eti.app.Styles
+import eti.data.Options
 import eti.data.SubTopic
 import eti.data.Topic
-import eti.data.TopicSelectorListener
+import eti.view.OptionsObserver
+import eti.view.TopicSelectorObserver
 import javafx.beans.value.ObservableValue
-import javafx.geometry.Insets
 import javafx.scene.control.Label
-import javafx.scene.control.ScrollPane
-import javafx.scene.layout.*
-import javafx.scene.paint.Color
+import javafx.scene.layout.Priority
 import javafx.scene.text.Font
 import tornadofx.*
 
-class SubTopicsBox : View(), TopicSelectorListener {
+class SubTopicsBox : View(), TopicSelectorObserver, OptionsObserver {
+
     val selected = mutableMapOf<Topic, MutableList<SubTopic>>()
     val display =
-            vbox {
-                background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-                border = Border(BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths(0.0)))
-            }
+            vbox { addClass(Styles.scrollHolder) }
 
     override val root = vbox {
+        addClass(Styles.boxRoot)
         label("Unteraufgabenbereich") {
-            vboxConstraints { margin = Insets(10.0) }
+            addClass(Styles.heading)
         }
         gridpane {
-            vboxConstraints {
-                marginLeft = 20.0
-                vgrow = Priority.ALWAYS
-            }
+            addClass(Styles.boxHolder)
+            vboxConstraints { vgrow = Priority.ALWAYS }
             scrollpane {
+                addClass(Styles.scrollHolder)
                 add(display)
-                gridpaneConstraints {
-                    hgrow = Priority.ALWAYS
-                    vgrow = Priority.ALWAYS
-                }
-                minHeight = 0.0
-                minWidth = 230.0
-                isFitToWidth = true
-                hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-                style = "-fx-background-color:transparent;"
             }
-            background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-            border = Border(BorderStroke(Color(0.78431372549, 0.78431372549, 0.78431372549, 1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths(2.0)))
-            minWidth = 230.0
         }
     }
 
@@ -57,8 +43,8 @@ class SubTopicsBox : View(), TopicSelectorListener {
         val selectedSubTopics = selected[topic]
         display.add(label(topic.name) { font = Font("Arial", 14.5); paddingBottom = 5; paddingTop = 5 })
         for (subTopic in topic.SubTopics) {
-            display.add(checkbox(subTopic.nameWithoutExtension) {
-                paddingAll = 5
+            display.add(checkbox(subTopic.nameWithoutExtension + " (${subTopic.Exercises.size})") {
+                addClass(Styles.checkboxStyle)
                 selectedProperty().set(selectedSubTopics != null && selectedSubTopics.contains(subTopic) || selectedSubTopics == null)
                 selectedProperty().addListener(
                         ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?, oldValue: Boolean, newValue: Boolean ->
@@ -94,5 +80,9 @@ class SubTopicsBox : View(), TopicSelectorListener {
     override fun onTopicChanged(topic: Topic, checked: Boolean) {
         if (checked) showSubTopics(topic)
         else removeSubTopic(topic)
+    }
+
+    override fun onOptionschanged(opt: Options) {
+        display.isVisible = !opt.randomSubTopics
     }
 }

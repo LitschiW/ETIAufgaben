@@ -1,67 +1,65 @@
 package eti.view.boxes
 
+import eti.app.Styles
 import eti.data.Options
-import eti.data.OptionsObserver
 import eti.extensions.isChecked
+import eti.view.OptionsObserver
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.geometry.Insets
 import javafx.geometry.Pos
-import javafx.scene.layout.*
-import javafx.scene.paint.Color
+import javafx.scene.layout.Priority
 import tornadofx.*
 
 class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeListener<Any> {
     val optionsPadding = 5.0
 
-    val box1 = checkbox("speichere LaTeX Projekt") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
-    val box2 = checkbox("generiere Antworten") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
-    val box3 = checkbox("zufällige Subaufgabenbereiche") { paddingAll = optionsPadding }.apply { selectedProperty().addListener(this@OptionsBox) }
+    val box1 = checkbox("speichere LaTeX Projekt") { paddingAll = optionsPadding; selectedProperty().addListener(this@OptionsBox) }
+    val box2 = checkbox("generiere Antworten") { paddingAll = optionsPadding; selectedProperty().addListener(this@OptionsBox) }
+    val box3 = checkbox("zufällige Subaufgabenbereiche") { paddingAll = optionsPadding; selectedProperty().addListener(this@OptionsBox) }
     val subTopicExerciseCountBox = textfield("2") {
         maxWidth = 40.0
         minWidth = 40.0
         alignment = Pos.BASELINE_RIGHT
         hboxConstraints { marginRight = 10.0 }
-    }.apply { textProperty().addListener(this@OptionsBox) }
+        textProperty().addListener(this@OptionsBox)
+    }
     val subTopicCountBox = textfield("2") {
         maxWidth = 40.0
         minWidth = 40.0
         alignment = Pos.BASELINE_RIGHT
         hboxConstraints { marginRight = 10.0 }
-    }.apply { textProperty().addListener(this@OptionsBox) }
-
+        textProperty().addListener(this@OptionsBox)
+    }
     var subTopicCountBoxHolder = hbox {
         label("max. #Unteraufgabenbereiche") {
-            paddingAll = optionsPadding
+            paddingAll = 5.0
         }
         spacer { }
         add(subTopicCountBox)
-    }.apply { visibleProperty().set(false) }
+        visibleProperty().set(false)
+    }
 
     override val root = vbox {
+        addClass(Styles.boxRoot)
         label("Optionen") {
-            vboxConstraints { margin = Insets(10.0) }
+            addClass(Styles.heading)
         }
-        vbox {
-            add(box1)
-            //add(box2)
-            add(box3)
-            hbox {
-                label("max. #Unteraufgaben") {
-                    paddingAll = optionsPadding
+        gridpane {
+            addClass(Styles.boxHolder)
+            vboxConstraints { vgrow = Priority.ALWAYS }
+            vbox {
+                add(box1)
+                //add(box2)
+                add(box3)
+                hbox {
+                    label("max. #Unteraufgaben") {
+                        paddingAll = 5.0
+                    }
+                    spacer { }
+                    add(subTopicExerciseCountBox)
                 }
-                spacer { }
-                add(subTopicExerciseCountBox)
+                add(subTopicCountBoxHolder)
             }
-            add(subTopicCountBoxHolder)
-            vboxConstraints {
-                marginLeft = 20.0
-                vgrow = Priority.ALWAYS
-            }
-            background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-            border = Border(BorderStroke(Color(0.78431372549, 0.78431372549, 0.78431372549, 1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths(2.0)))
-            minWidth = 230.0
-            paddingAll = 5
         }
     }
 

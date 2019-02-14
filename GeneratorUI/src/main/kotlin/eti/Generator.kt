@@ -1,7 +1,10 @@
 package eti
 
+import eti.data.Options
 import eti.data.SubTopic
 import eti.data.Topic
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import java.io.File
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
@@ -12,9 +15,16 @@ class Generator {
     //Directories used to store latex docs
     private val document = StringBuilder()
     private val tempDir: File = createTempDir()
-    private val setupDir = File(tempDir.absolutePath + "\\SetupData\\")
-    private val exercisesDir = File(tempDir.absolutePath + "\\Aufgaben\\")
+    private val setupDir = File(Paths.get(tempDir.absolutePath, "SetupData").toUri())
+    private val exercisesDir = File(Paths.get(tempDir.absolutePath, "Aufgaben").toUri())
     private val repoRoot: File
+
+    private val notUsableCharsForLatex = "[ $\"{}]"
+
+    //Settings
+    private var targetFile: File? = null
+    private var currentOptions: Options = Options()
+
 
     //Streams (Output)
     private var out = PipedOutputStream()
@@ -23,41 +33,45 @@ class Generator {
 
     init {
         val root = File(Paths.get("").toAbsolutePath().toString())
-
         repoRoot = if (root.name == "GeneratorUI") root.parentFile else root
     }
 
     /**
      * @param topics Map that contains the list of topics (absolute paths) used as keys and references the used list of subtopics(names) as value to this key.
-     * @param maxNumOfSubExercises maximum number of subtopics loads for each topic, use Int.MAX_VALUE for everything.
      * @param targetFile output File for the pdf
-     * @param saveTex set this to true if the generated tex code should be saved into a folder.
+     * @param options provide options for the compiling here
      */
+    @Synchronized
     fun generateDocument(topics: Map<Topic, List<SubTopic>>,
-                         maxNumOfExercisesPerSubtopic: Int,
                          targetFile: File,
-                         randomizeSubTopics: Boolean = false,
-                         saveTex: Boolean = false) {
+                         options: Options) {
 //one may want to do this async and lock the main screen for the duration
 
-        //check Arguments
-        if (targetFile.extension != "pdf") throw IllegalArgumentException("targetFile extension should be '.pdf'")
-        if (maxNumOfExercisesPerSubtopic <= 0) throw IllegalArgumentException("maxNumOfExercisesPerSubtopic has to be greater than 0")
+        //check Arguments for errors
+        try {
+            checkArguments(topics, targetFile, options)
+        } catch (e: Exception) {
+            out.close()
+            throw e
+        }
 
         //begin main document
-        startDocument(targetFile.nameWithoutExtension)
+        startDocument()
 
         //iterate over selected Topics and Subtopics
         for ((topic, subtopics) in topics) {
-            //start new partial document for topic
-            val topicDoc = File(exercisesDir.absolutePath + "\\${topic.nameWithoutExtension.replace(Regex("[ $\"{}]"), "")}.tex")
+            //start new partial document for topic and
+            //remove not LaTeX conform symbols from .tex File's name
+            val topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
 //            if(!topicDoc.createNewFile()) {
 // //may handle temp file already existing
 //            }
 
             writeOutput("generating Text for topic \"${topic.nameWithoutExtension}\"...\n")
-            //let the topic generate its text
-            val topicText = topic.generateText(subtopics, maxNumOfExercisesPerSubtopic)
+            //let the topic generate its text depending on the generation style
+            val topicText =
+                    if (currentOptions.randomSubTopics) topic.generateText(currentOptions.subTopicsCount, currentOptions.subTopicExerciseCount)
+                    else topic.generateText(subtopics, currentOptions.subTopicExerciseCount)
 
             writeOutput("writing Text to file ${topicDoc.absolutePath}\n")
             //add subtopics/exercise text to partial document
@@ -65,38 +79,73 @@ class Generator {
 
             writeOutput("appending text to document\n")
             // \include tex file into mainDocument
-            document.appendln("""      \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
+            document.appendln("""    \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
             writeOutput("Done..\n")
         }
         //end main document
         endDocument()
         //generate pdf file and copies it to target (also copies tex if necessary )
-        generatePDF(targetFile, saveTex)
+        generatePDF()
         //cleanup
         tempDir.deleteRecursively()
-//notify finished (? look up kotlin event system)
+
+//may notify finished (if caller listens to the outputStream, it will automatically pause)
 
         out.close()
     }
 
-    private fun generatePDF(targetFile: File, saveTex: Boolean) {
-        //save file
-        val latexFile = File(tempDir.absolutePath + "\\${targetFile.nameWithoutExtension}.tex")
+    private fun checkArguments(topics: Map<Topic, List<SubTopic>>, targetFile: File, options: Options) {
+        writeOutput("starting generation...\n")
+        writeOutput("checking Arguments...\n")
+
+        if (targetFile.exists() && (!options.saveLatex && targetFile.isFile || targetFile.isDirectory && targetFile.listFiles().any { file -> file.name == targetFile.name })) {
+            handelTargetFileExisting(targetFile) //either deletes the existing file or throws an exception
+        }
+
+        this.targetFile =
+                if (targetFile.extension != "pdf" && !options.saveLatex) File(targetFile.absolutePath + ".pdf")
+                else targetFile
+
+
+        if (options.subTopicExerciseCount <= 0) throw IllegalArgumentException("SubtopicExerciseCount has to be greater than 0\n")
+
+        currentOptions = options
+
+        if (targetFile.isDirectory && options.saveLatex) writeOutput("Warning!: selected to save latex project, but target folder name is not a Directory!\n")
+    }
+
+    private fun handelTargetFileExisting(targetFile: File) {
+        val alert = Alert(Alert.AlertType.WARNING)
+        alert.title = ("Datei existiert bereits!")
+        alert.headerText = "Error whilst starting generation"
+        alert.contentText = "Die angegebene Ziel Datei existiert bereits oder der Zielordner enthält bereits eine Datei mit passendem Namen.\nSoll die vorhandene Datei gelöscht werden?"
+        alert.buttonTypes.addAll(ButtonType.YES, ButtonType.CANCEL)
+        val res = alert.showAndWait()
+        if (res.isPresent && res.get() == ButtonType.YES) {
+            if (targetFile.isFile) targetFile.delete()
+            else if (targetFile.isDirectory) targetFile.listFiles().find { file -> file.name == targetFile.name }?.delete()
+        } else throw IllegalArgumentException("Die angegebene Ziel Datei existiert bereits oder der Zielordner enthält bereits eine Datei mit passendem Namen.")
+    }
+
+    private fun generatePDF() {
+        val targetFile = this.targetFile as File
+        //save latex file
+        val latexFile = File(Paths.get(tempDir.absolutePath, "${targetFile.nameWithoutExtension}.tex").toUri())
         writeOutput("saving generated text to ${latexFile.absolutePath}\n")
         latexFile.writeText(document.toString())
         writeOutput("Done..\n")
 
         //if saveTex: copy result's tex structure into the targetFile's folder
-        if (saveTex) {
-            writeOutput("save tex files is enabled.\nCopying project files to target location $targetFile.absolutePath.removeSuffix(\".pdf\"))\n")
-            tempDir.copyRecursively(File(targetFile.absolutePath.removeSuffix(".pdf")), true)
+        if (currentOptions.saveLatex) {
+            writeOutput("save tex files is enabled.\nCopying project files to target location ${targetFile.absolutePath}\n")
+            tempDir.copyRecursively(File(targetFile.absolutePath), true)
             writeOutput("Done..\n")
         }
 
         writeOutput("starting latex compiler...\n")
         //call command to trigger latex interpreter
         if (compileLatex(latexFile)) //command will be run synchronously
-            writeOutput("\n\nPDF erfolgreich erstellt.\n")
+            writeOutput("\n\nPDF erfolgreich erstellt!\n")
         else {
             writeOutput("\n\nEin Fehler ist aufgetreten.\n Es wurde keine keine pdf erstellt\n")
             tempDir.deleteRecursively()
@@ -104,10 +153,10 @@ class Generator {
         }
 
         //if saveTex:  copy pdf in targetFile's folder
-        val pdfFile = File(tempDir.absolutePath + "\\${targetFile.name}")
-        writeOutput("moving pdf-file from output to target file/folder\n")
-        if (saveTex) {
-            pdfFile.copyTo(File(targetFile.absolutePath.removeSuffix(".pdf") + "\\${targetFile.name}"))
+        val pdfFile = File(latexFile.absolutePath.removeSuffix(".tex") + ".pdf")
+        writeOutput("moving pdf-file from output to target file/folder ${targetFile.absolutePath}\n")
+        if (currentOptions.saveLatex) {
+            pdfFile.copyTo(File(Paths.get(targetFile.absolutePath, pdfFile.name).toUri()))
         } else {
             //else copy pdf into targetFile
             pdfFile.copyTo(targetFile)
@@ -137,15 +186,15 @@ class Generator {
         return true
     }
 
-    private fun startDocument(fileName: String) {
-        writeOutput("Starting...\n")
+    private fun startDocument() {
+        writeOutput("Starting Document...\n")
         //copy SetupData to tempDir
         var x = File(Paths.get("SetupData").toAbsolutePath().toString())
         if (!x.exists()) {//find folder if we are debugging
             x = x.parentFile.parentFile
             x = x.listFiles().find { file -> file.name == "SetupData" }!!
         }
-        writeOutput("fond SetupData at ${x.absolutePath}\n")
+        writeOutput("found SetupData at ${x.absolutePath}\n")
         writeOutput("copy SetupData to ${setupDir.absolutePath}\n")
         x.copyRecursively(setupDir, true)
         writeOutput("Done..\n")
@@ -154,13 +203,13 @@ class Generator {
 \documentclass[12pt]{article}
 \input{SetupData/usepackage}
 \begin{document}
-    \setTitel{${fileName}}
+    \setTitel{${targetFile?.nameWithoutExtension}}
     \input{SetupData/pagesetup}
     """.trimIndent())
 
         writeOutput("Created document start\n")
         exercisesDir.mkdir()
-        writeOutput("created directory for Exercises\n")
+        writeOutput("Created directory for Exercises\n")
     }
 
     private fun endDocument() {
