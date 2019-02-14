@@ -1,13 +1,16 @@
 package eti.view
 
-import eti.data.*
+import eti.app.Styles
+import eti.data.Options
+import eti.data.SubTopic
+import eti.data.Topic
 import eti.view.boxes.OptionsBox
 import eti.view.boxes.SubTopicsBox
 import eti.view.boxes.TopicsBox
 import javafx.geometry.Pos
 import tornadofx.*
 
-class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), OptionsObserver, TopicSelectorListener {
+class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), OptionsObserver, TopicSelectorObserver {
 
     val topicBox = TopicsBox(this)
     val subTopicsBox = SubTopicsBox()
@@ -17,8 +20,8 @@ class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), 
         add(topicBox.root)
         add(subTopicsBox.root)
         add(optionsBox.root)
-        minHeight = 350.0
-        maxHeight = 350.0
+        minHeight = Styles.boxHeight
+        maxHeight = Styles.boxHeight
         alignment = Pos.TOP_CENTER
     }
 

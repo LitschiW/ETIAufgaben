@@ -1,8 +1,9 @@
 package eti.view.boxes
 
+import eti.app.Styles
 import eti.data.SubTopic
 import eti.data.Topic
-import eti.data.TopicSelectorListener
+import eti.view.TopicSelectorObserver
 import javafx.beans.value.ObservableValue
 import javafx.geometry.Insets
 import javafx.scene.control.Label
@@ -12,7 +13,7 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
 
-class SubTopicsBox : View(), TopicSelectorListener {
+class SubTopicsBox : View(), TopicSelectorObserver {
     val selected = mutableMapOf<Topic, MutableList<SubTopic>>()
     val display =
             vbox {
@@ -22,11 +23,14 @@ class SubTopicsBox : View(), TopicSelectorListener {
 
     override val root = vbox {
         label("Unteraufgabenbereich") {
-            vboxConstraints { margin = Insets(10.0) }
+            vboxConstraints {
+                margin = Styles.boxHeadingMargin
+                font = Styles.headingFont
+            }
         }
         gridpane {
             vboxConstraints {
-                marginLeft = 20.0
+                marginLeft = Styles.boxSpacerDistance
                 vgrow = Priority.ALWAYS
             }
             scrollpane {
@@ -36,14 +40,14 @@ class SubTopicsBox : View(), TopicSelectorListener {
                     vgrow = Priority.ALWAYS
                 }
                 minHeight = 0.0
-                minWidth = 230.0
+                minWidth = Styles.boxWidth
                 isFitToWidth = true
                 hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                 style = "-fx-background-color:transparent;"
             }
-            background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-            border = Border(BorderStroke(Color(0.78431372549, 0.78431372549, 0.78431372549, 1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths(2.0)))
-            minWidth = 230.0
+            background = Styles.background_White
+            border = Styles.border_Gray
+            minWidth = Styles.boxWidth
         }
     }
 
@@ -55,10 +59,10 @@ class SubTopicsBox : View(), TopicSelectorListener {
         if (selected.keys.contains(topic)) return
 
         val selectedSubTopics = selected[topic]
-        display.add(label(topic.name) { font = Font("Arial", 14.5); paddingBottom = 5; paddingTop = 5 })
+        display.add(label(topic.name) { font = Font("Arial", 14.5); paddingBottom = Styles.elementsPadding; paddingTop = Styles.elementsPadding })
         for (subTopic in topic.SubTopics) {
             display.add(checkbox(subTopic.nameWithoutExtension + " (${subTopic.Exercises.size})") {
-                paddingAll = 5
+                paddingAll = Styles.elementsPadding
                 selectedProperty().set(selectedSubTopics != null && selectedSubTopics.contains(subTopic) || selectedSubTopics == null)
                 selectedProperty().addListener(
                         ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?, oldValue: Boolean, newValue: Boolean ->

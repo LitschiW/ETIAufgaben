@@ -2,7 +2,6 @@ package eti.view
 
 import eti.Generator
 import eti.data.Options
-import eti.data.OptionsObserver
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tornadofx.*

@@ -1,7 +1,6 @@
 package eti.view
 
 import eti.data.Options
-import eti.data.OptionsObserver
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.geometry.Pos

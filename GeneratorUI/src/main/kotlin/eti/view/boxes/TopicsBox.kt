@@ -1,14 +1,15 @@
 package eti.view.boxes
 
+import eti.app.Styles
 import eti.data.ExerciseDirectory
-import eti.data.TopicSelectorListener
+import eti.view.TopicSelectorObserver
 import javafx.beans.value.ObservableValue
 import javafx.geometry.Insets
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class TopicsBox(private val changeListener: TopicSelectorListener) : View() {
+class TopicsBox(private val changeObserver: TopicSelectorObserver) : View() {
     val display =
             vbox {
                 background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
@@ -17,11 +18,14 @@ class TopicsBox(private val changeListener: TopicSelectorListener) : View() {
 
     override val root = vbox {
         label("Aufgbenbereiche") {
-            vboxConstraints { margin = Insets(10.0) }
+            vboxConstraints {
+                margin = Styles.boxHeadingMargin
+                font = Styles.headingFont
+            }
         }
         gridpane {
             vboxConstraints {
-                marginLeft = 20.0
+                marginLeft = Styles.boxSpacerDistance
                 vgrow = Priority.ALWAYS
             }
             scrollpane {
@@ -29,20 +33,20 @@ class TopicsBox(private val changeListener: TopicSelectorListener) : View() {
                 isFitToWidth = true
                 style = "-fx-background-color:transparent;"
             }
-            background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-            border = Border(BorderStroke(Color(0.78431372549, 0.78431372549, 0.78431372549, 1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths(2.0)))
-            minWidth = 230.0
+            background = Styles.background_White
+            border = Styles.border_Gray
+            minWidth = Styles.boxWidth
         }
     }
 
     init {
         for (topic in ExerciseDirectory.Topics) {
             display.add(checkbox(topic.name) {
-                paddingAll = 5
+                paddingAll = Styles.elementsPadding
                 selectedProperty().addListener(ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?,
                                                                          oldValue: Boolean,
                                                                          newValue: Boolean ->
-                    changeListener.onTopicChanged(topic, newValue)
+                    changeObserver.onTopicChanged(topic, newValue)
                 })
             })
         }
