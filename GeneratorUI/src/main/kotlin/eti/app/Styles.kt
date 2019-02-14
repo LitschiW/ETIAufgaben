@@ -24,7 +24,7 @@ class Styles : Stylesheet() {
         heading {
             padding = box(5.px, 0.px)
             fontWeight = FontWeight.BOLD
-            font = Font("Arial", 16.0)
+            font = Font("Comic Sans MS", 15.5)
         }
 
         val whiteBox = mixin {
@@ -52,7 +52,7 @@ class Styles : Stylesheet() {
         }
 
         boxRoot {
-            padding = box(0.px, 0.px, 0.px, 15.px)
+            padding = box(10.px, 0.px, 0.px, 15.px)
         }
 
         checkboxStyle {
