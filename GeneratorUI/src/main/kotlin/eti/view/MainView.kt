@@ -1,9 +1,7 @@
 package eti.view
 
-import eti.Generator
 import eti.data.Options
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import eti.dialogues.SaveDialog
 import tornadofx.*
 
 class MainView : View("ETI Generator"), OptionsObserver {
@@ -16,27 +14,9 @@ class MainView : View("ETI Generator"), OptionsObserver {
 
     val outPut = OutputSelector().apply {
         action {
-            val gen = Generator()
-            val output = gen.inputStream.bufferedReader()
             val selection = boxHolder.getSelection()
             val targetFile = this.getTarget()
-
-            GlobalScope.launch {
-                try {
-                    gen.generateDocument(selection,
-                            targetFile,
-                            currentOptions)
-                } catch (e: Exception) {
-                    println(e)
-                }
-
-            }
-
-            do {
-                val s = output.readLine()
-                if (s != null) println(s)
-            } while (s != null)
-            checkAndHandelPathExists()
+            SaveDialog().startGeneration(selection, targetFile, currentOptions)
         }
     }
     val boxHolder = BoxHolder(this)
