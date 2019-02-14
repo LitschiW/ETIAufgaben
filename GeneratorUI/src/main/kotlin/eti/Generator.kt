@@ -45,53 +45,53 @@ class Generator {
     fun generateDocument(topics: Map<Topic, List<SubTopic>>,
                          targetFile: File,
                          options: Options) {
-//one may want to do this async and lock the main screen for the duration
-
-        //check Arguments for errors
         try {
+            //check Arguments for errors
             checkArguments(topics, targetFile, options)
+
+
+            //begin main document
+            startDocument()
+
+            //iterate over selected Topics and Subtopics
+            for ((topic, subtopics) in topics) {
+                //start new partial document for topic and
+                //remove not LaTeX conform symbols from .tex File's name
+                var topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
+                var count = 1
+                while (!topicDoc.createNewFile()) {
+                    topicDoc = File(topicDoc.absolutePath.removeSuffix(".tex") + "${count++}.tex")
+                }
+
+                writeOutput("generating Text for topic \"${topic.nameWithoutExtension}\"...\n")
+                //let the topic generate its text depending on the generation style
+                val topicText =
+                        if (currentOptions.randomSubTopics) topic.generateText(currentOptions.subTopicsCount, currentOptions.subTopicExerciseCount)
+                        else topic.generateText(subtopics, currentOptions.subTopicExerciseCount)
+//TODO: answer generation
+                writeOutput("writing Text to file ${topicDoc.absolutePath}\n")
+                //add subtopics/exercise text to partial document
+                topicDoc.appendText(topicText)
+
+                writeOutput("appending text to document\n")
+                // \include tex file into mainDocument
+                document.appendln("""    \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
+                writeOutput("Done..\n")
+            }
+            //end main document
+            endDocument()
+            //generate pdf file and copies it to target (also copies tex if necessary )
+            generatePDF()
+            //cleanup
+            tempDir.deleteRecursively()
+
+//TODO: may notify finished (if caller listens to the outputStream, it will automatically pause), may provide optional callback or something...
+
         } catch (e: Exception) {
-            out.close()
             throw e
+        } finally {
+            out.close()
         }
-
-        //begin main document
-        startDocument()
-
-        //iterate over selected Topics and Subtopics
-        for ((topic, subtopics) in topics) {
-            //start new partial document for topic and
-            //remove not LaTeX conform symbols from .tex File's name
-            val topicDoc = File(exercisesDir.absolutePath + "${File.separator}${topic.nameWithoutExtension.replace(Regex(notUsableCharsForLatex), "")}.tex")
-//            if(!topicDoc.createNewFile()) {
-// //may handle temp file already existing
-//            }
-
-            writeOutput("generating Text for topic \"${topic.nameWithoutExtension}\"...\n")
-            //let the topic generate its text depending on the generation style
-            val topicText =
-                    if (currentOptions.randomSubTopics) topic.generateText(currentOptions.subTopicsCount, currentOptions.subTopicExerciseCount)
-                    else topic.generateText(subtopics, currentOptions.subTopicExerciseCount)
-
-            writeOutput("writing Text to file ${topicDoc.absolutePath}\n")
-            //add subtopics/exercise text to partial document
-            topicDoc.appendText(topicText)
-
-            writeOutput("appending text to document\n")
-            // \include tex file into mainDocument
-            document.appendln("""    \include{Aufgaben/${topicDoc.nameWithoutExtension}}""")
-            writeOutput("Done..\n")
-        }
-        //end main document
-        endDocument()
-        //generate pdf file and copies it to target (also copies tex if necessary )
-        generatePDF()
-        //cleanup
-        tempDir.deleteRecursively()
-
-//may notify finished (if caller listens to the outputStream, it will automatically pause)
-
-        out.close()
     }
 
     private fun checkArguments(topics: Map<Topic, List<SubTopic>>, targetFile: File, options: Options) {
@@ -149,7 +149,7 @@ class Generator {
         else {
             writeOutput("\n\nEin Fehler ist aufgetreten.\n Es wurde keine keine pdf erstellt\n")
             tempDir.deleteRecursively()
-            return
+            throw Exception("Something went wrong while compiling the LaTeX code. See the output for more information.")
         }
 
         //if saveTex:  copy pdf in targetFile's folder
@@ -177,13 +177,17 @@ class Generator {
         // read the output from the command (input into this program)
         val stdInput = p.inputStream.bufferedReader()
 
+        var detectedError = false
         do {
             val s = stdInput.readLine()
-//detect error here
-            if (s != null) writer.apply { write(s + "\n"); flush() }
+            if (s != null) {
+                writer.apply { write(s + "\n"); flush() }
+                //really simple error detection
+                detectedError = detectedError || (s.contains("error"))
+            }
         } while ((s) != null)
 
-        return true
+        return !detectedError
     }
 
     private fun startDocument() {
@@ -221,6 +225,6 @@ class Generator {
     }
 
     private fun writeOutput(text: String) {
-        writer.apply { write(text);flush() }
+        writer.apply { write(text);flush(); }
     }
 }
