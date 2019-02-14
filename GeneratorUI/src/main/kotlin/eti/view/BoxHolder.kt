@@ -31,6 +31,7 @@ class BoxHolder(private val optionsObserver: OptionsObserver? = null) : View(), 
 
     override fun onOptionschanged(opt: Options) {
         optionsObserver?.onOptionschanged(opt)
+        subTopicsBox.onOptionschanged(opt)
         subTopicsBox.root.isDisable = opt.randomSubTopics
     }
 

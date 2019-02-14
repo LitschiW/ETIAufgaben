@@ -17,35 +17,25 @@ class TopicsBox(private val changeObserver: TopicSelectorObserver) : View() {
             }
 
     override val root = vbox {
+        addClass(Styles.boxRoot)
         label("Aufgbenbereiche") {
-            vboxConstraints {
-                margin = Styles.boxHeadingMargin
-                font = Styles.headingFont
-            }
+            addClass(Styles.heading)
         }
         gridpane {
-            vboxConstraints {
-                marginLeft = Styles.boxSpacerDistance
-                vgrow = Priority.ALWAYS
-            }
+            addClass(Styles.boxHolder)
+            vboxConstraints { vgrow = Priority.ALWAYS }
             scrollpane {
+                addClass(Styles.scrollHolder)
                 add(display)
-                isFitToWidth = true
-                style = "-fx-background-color:transparent;"
             }
-            background = Styles.background_White
-            border = Styles.border_Gray
-            minWidth = Styles.boxWidth
         }
     }
 
     init {
         for (topic in ExerciseDirectory.Topics) {
             display.add(checkbox(topic.name) {
-                paddingAll = Styles.elementsPadding
-                selectedProperty().addListener(ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?,
-                                                                         oldValue: Boolean,
-                                                                         newValue: Boolean ->
+                paddingAll = 5.0
+                selectedProperty().addListener(ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?, oldValue: Boolean, newValue: Boolean ->
                     changeObserver.onTopicChanged(topic, newValue)
                 })
             })

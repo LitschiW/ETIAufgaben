@@ -11,7 +11,7 @@ import javafx.scene.layout.Priority
 import tornadofx.*
 
 class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeListener<Any> {
-    val optionsPadding = Styles.elementsPadding
+    val optionsPadding = 5.0
 
     val box1 = checkbox("speichere LaTeX Projekt") { paddingAll = optionsPadding; selectedProperty().addListener(this@OptionsBox) }
     val box2 = checkbox("generiere Antworten") { paddingAll = optionsPadding; selectedProperty().addListener(this@OptionsBox) }
@@ -32,7 +32,7 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
     }
     var subTopicCountBoxHolder = hbox {
         label("max. #Unteraufgabenbereiche") {
-            paddingAll = optionsPadding
+            paddingAll = 5.0
         }
         spacer { }
         add(subTopicCountBox)
@@ -40,32 +40,26 @@ class OptionsBox(private val optionsObserver: OptionsObserver) : View(), ChangeL
     }
 
     override val root = vbox {
+        addClass(Styles.boxRoot)
         label("Optionen") {
-            vboxConstraints {
-                margin = Styles.boxHeadingMargin
-                font = Styles.headingFont
-            }
+            addClass(Styles.heading)
         }
-        vbox {
-            add(box1)
-            //add(box2)
-            add(box3)
-            hbox {
-                label("max. #Unteraufgaben") {
-                    paddingAll = optionsPadding
+        gridpane {
+            addClass(Styles.boxHolder)
+            vboxConstraints { vgrow = Priority.ALWAYS }
+            vbox {
+                add(box1)
+                //add(box2)
+                add(box3)
+                hbox {
+                    label("max. #Unteraufgaben") {
+                        paddingAll = 5.0
+                    }
+                    spacer { }
+                    add(subTopicExerciseCountBox)
                 }
-                spacer { }
-                add(subTopicExerciseCountBox)
+                add(subTopicCountBoxHolder)
             }
-            add(subTopicCountBoxHolder)
-            vboxConstraints {
-                marginLeft = Styles.boxSpacerDistance
-                vgrow = Priority.ALWAYS
-            }
-            background = Styles.background_White
-            border = Styles.border_Gray
-            minWidth = Styles.boxWidth
-            paddingAll = Styles.elementsPadding
         }
     }
 
