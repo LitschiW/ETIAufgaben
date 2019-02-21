@@ -48,6 +48,14 @@ echo (this happens automatically with the default installation)
 goto fail
 
 :execute
+echo.
+WHERE pdflatex >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+	echo Warning! pdflatex was not found. Please install MikTex on this System.
+	echo "Otherwise this program will not run properly!"
+	echo.
+)
+echo Starting Generator...
 "%JAVA_EXE%" -jar "%JAR_TARGET%"
 goto mainEnd
 
