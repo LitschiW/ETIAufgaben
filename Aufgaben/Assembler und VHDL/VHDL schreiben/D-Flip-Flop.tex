@@ -1,0 +1,50 @@
+\subsection{D-Flip Flop}
+Gegeben sei folgender VHDL Code:
+\begin{minted}{vhdl}
+process(clk,reset) is
+begin
+	%write your code here:
+
+
+
+
+	if reset'event and reset='0' then
+		q_o <= (others => '0');
+	endif;
+end process;
+\end{minted}
+\keepTogether{
+	\subsubsection{}
+	Sie haben weiterhin einen Eingang d\_i zur Verfügung, q\_o soll einen Ausgang darstellen.
+	Implementieren sie die Funktion eines D-Flip-Flops!\\
+}
+\keepTogether{
+	\subsubsection{}
+	Was für einen Resettyp hat dieses Flip-Flop?\\[0.3cm]
+	$
+	\arraycolsep=4pt\def\arraystretch{1.5}
+	\begin{array}{r l l}
+	1.&\text{synchron aktiv High} &\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\\
+	2.&\text{synchron aktiv Low} &\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\\
+	3.&\text{asynchron aktiv High} &\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\\
+	4.&\text{asynchron aktiv Low} &\tikz[baseline=0.5ex]{\draw (0,0) rectangle (0.5,0.5);}\\
+	\end{array}$
+}
+%Aufgabe kommt hier her
+
+%------------------------------------------------------------------------------------------------------------
+%Befehle:
+	
+%Antwortboxen können folgendermaßen erzeugt werden:
+%\makeanswerbox{height}
+%\makeinlineanswrebox{length}{rechtes padding}
+%\makecustomanswerbox{width}{height}
+
+%Um Zeilenumbrüche innerhalb einer Aufgabe zu vermeiden nutze:
+%\keepTogether{text}
+
+%\subsubsection{} kann benutzt werden um die Aufgabe weiterhin zu unterteilen
+
+%Falls deine Aufgabe zusätzliche usepackages benötigen sollte: trage sie einfach in die usepackage Datei in 
+%ETIPAVorschlaege\SetupData\usepackage.tex ein schreibe die Funktion hinzu. packages die nicht annotiert sind,
+%werden nicht akzeptiert
