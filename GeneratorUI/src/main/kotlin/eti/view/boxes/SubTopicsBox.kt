@@ -50,11 +50,12 @@ class SubTopicsBox : View(), TopicSelectorObserver, OptionsObserver {
                         ChangeListener<Boolean> { observableValue: ObservableValue<out Boolean>?, oldValue: Boolean, newValue: Boolean ->
                             if (!newValue && selected[topic] != null && selected[topic]!!.contains(subTopic)) selected[topic]?.remove(subTopic)
                             else if (newValue) {
-                                selected.getOrPut(topic, defaultValue = { mutableListOf(subTopic) })
+                                selected.getOrPut(topic, defaultValue = { mutableListOf(subTopic) }).run { if (!contains(subTopic)) add(subTopic) }
                             }
                         })
             })
-            if (selectedSubTopics == null) selected.getOrPut(topic, defaultValue = { mutableListOf(subTopic) })
+            if (selectedSubTopics == null)
+                selected.getOrPut(topic, defaultValue = { mutableListOf(subTopic) }).run { if (!contains(subTopic)) add(subTopic) }
         }
     }
 

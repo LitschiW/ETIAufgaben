@@ -165,7 +165,7 @@ class Generator {
 
     private fun compileLatex(latexFile: File): Boolean {
         //create command...
-        val command = "pdflatex.exe -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
+        val command = "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode ${latexFile.absolutePath}"
 
         writeOutput("Starting latex compiler with:\n")
         writeOutput("$command\n")
