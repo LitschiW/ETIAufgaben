@@ -1,9 +1,8 @@
 # ETI Aufgabengenerator
 
-
 ## Downloads
 
-[v0.3](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.3.zip)
+[v0.3](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.3.zip) Basisversion mit UI und Generator
 
 ## Voraussetungen
 
@@ -29,19 +28,23 @@ In den *__Optionen__* kann man weitere Einstellungen treffen:
  -  zufällige Subaufgabenbereiche **-** Schaltet die Auswahl von Subaufgabenbereichen auf Zufall. Im erscheinenden Textfeld kann man die Anzahl der Subaufgabenbereiche eingeben die ausgewählt werden sollen.#
  - max. Anzahl der Subaufgaben **-** beschränkt die Anzahl der Aufgaben die von einem Subaufgabenbereich ausgewählt werden.
 
- Im unteren Bereich kann man den Ausgabepfad für das Projekt oder die Datei auswählen.
- Sollte eine entsprechende PDF schon vorhanden sein erscheint eiene Warnung und das Speichern wird deaktiviert. Der "Überschreiben Dialog", der beim Auswählen einer vorhandenen Datei erscheint, hat keinen (noch) keinen Effekt! 
+## Teilnehmen
 
+Für typos, bugs, usw gibt es Issues.
 
-## Beitragen
+#### Forken for dummies
 
-Es sind gerne alle zum Beitragen und Korrigieren eingeladen.
+1.  Oben Rechts auf Fork drücken. (Das erstellt eine Kopie des Repos auf eurem Account.)
+2.  Eigenes Repository klonen und Änderungen Implementieren.
+3.  Wenn zufrieden Pull-Request auf das Hauptrepository stellen (evtl. eigene Source updaten, siehe GitHub UI)
 
 #### Neue Aufgaben hinzufügen
-Neue Aufgaben können zu den jeweiligen (Sub-)Aufgabenbereichen hinzugefügt werden.
-Im Aufgaben Ordner liegen 2 Templates.  
-**AufgabeVorlage.tex**, ist ein sehr simples Skelett für eine neue Aufgabe. Sie ist **nicht** interpretierbar und enthält Hinweiße zum Erstellen von Aufgaben.  
-**KompilierbareVorlage.tex** ist eine Interpretierbare Projektdatei. In dieser Datei könnt ihr euren Latex Code schreiben, falls ihr sicherstellen wollt das er läuft. Wenn ihr mit eurem Code zufrieden seit könnt ihr den Inhalt der *document* Umgebung in eine .tex Datei kopiern und diese in den passenden Ordner schieben. Alternativ kann man natürlich auch direkt eine .tex Datei erstellen in die man den Aufgabencode schreibt. 
+Neue Aufgaben können zu den jeweiligen (Sub-)Aufgabenbereichen hinzugefügt werden.  
+Im Aufgaben Ordner liegen 2 Templates:  
+ - **AufgabeVorlage.tex**, ist ein sehr simples Skelett für eine neue Aufgabe. Sie ist **nicht** interpretierbar und enthält Hinweiße zum Erstellen von Aufgaben.  
+ - **KompilierbareVorlage.tex** ist eine Interpretierbare Projektdatei. In dieser Datei könnt ihr euren Latex Code schreiben, falls ihr sicherstellen wollt das er läuft.  
+ 
+ Wenn ihr mit eurem Code zufrieden seit könnt ihr den Inhalt der *document* Umgebung  in eine .tex Datei kopiern und diese in den passenden Ordner schieben. Alternativ kann man natürlich auch direkt eine .tex Datei erstellen in die man den Aufgabencode schreibt. 
 
 Wichtig ist, dass der konkrete Text der Aufgabe mit *\subsection{*[NAME_DER_AUFGABE]*}* beginnt.  
 Mit *\keeptogether{*[INHALT]*}* können Abschnitte des Textes gruppiert werden, sodass kein Zeilenumbruch stattfindet.  
