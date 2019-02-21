@@ -20,8 +20,8 @@ Zum Benutzen benötigt ihr:
  
 ## Bedienung
 
-Im linken Bereich *__Aufgabenbereiche__* könnt ihr die Aufgabenbereiche auswählen für die ihr Aufgaben generiert haben wollt.
-Unter *__Subaufgabenbereiche__* könnt ihr eure Auswahl noch genauer Einschränken. Die Zahl in Klammern gibt die Anzahl der verfügbaren Aufgaben zu diesem Subaufgabenbereich an.
+Im linken Bereich *__Aufgabenbereiche__* könnt ihr die Aufgabenbereiche auswählen für die ihr Aufgaben generiert haben wollt.  
+Unter *__Subaufgabenbereiche__* könnt ihr eure Auswahl noch genauer Einschränken. Die Zahl in Klammern gibt die Anzahl der verfügbaren Aufgaben zu diesem Subaufgabenbereich an. 
 
 In den *__Optionen__* kann man weitere Einstellungen treffen:
  - generiere LaTeX Projekt **-** generiert ein LaTeX-Projekt, sodass das Ergebnisdokument manuell  noch nachbearbeitet werden können.
@@ -31,3 +31,21 @@ In den *__Optionen__* kann man weitere Einstellungen treffen:
 
  Im unteren Bereich kann man den Ausgabepfad für das Projekt oder die Datei auswählen.
  Sollte eine entsprechende PDF schon vorhanden sein erscheint eiene Warnung und das Speichern wird deaktiviert. Der "Überschreiben Dialog", der beim Auswählen einer vorhandenen Datei erscheint, hat keinen (noch) keinen Effekt! 
+
+
+## Beitragen
+
+Es sind gerne alle zum Beitragen und Korrigieren eingeladen.
+
+#### Neue Aufgaben hinzufügen
+Neue Aufgaben können zu den jeweiligen (Sub-)Aufgabenbereichen hinzugefügt werden.
+Im Aufgaben Ordner liegen 2 Templates.  
+**AufgabeVorlage.tex**, ist ein sehr simples Skelett für eine neue Aufgabe. Sie ist **nicht** interpretierbar und enthält Hinweiße zum Erstellen von Aufgaben.  
+**KompilierbareVorlage.tex** ist eine Interpretierbare Projektdatei. In dieser Datei könnt ihr euren Latex Code schreiben, falls ihr sicherstellen wollt das er läuft. Wenn ihr mit eurem Code zufrieden seit könnt ihr den Inhalt der *document* Umgebung in eine .tex Datei kopiern und diese in den passenden Ordner schieben. Alternativ kann man natürlich auch direkt eine .tex Datei erstellen in die man den Aufgabencode schreibt. 
+
+Wichtig ist, dass der konkrete Text der Aufgabe mit *\subsection{*[NAME_DER_AUFGABE]*}* beginnt.  
+Mit *\keeptogether{*[INHALT]*}* können Abschnitte des Textes gruppiert werden, sodass kein Zeilenumbruch stattfindet.  
+Der Befehl *\subsubsection{*[NAME]*}* wird ebenfalls unterstützt.
+Wenn zusätzliche packages benötigt werden sollten die unter [SetupData\usepackage.tex](SetupData\usepackage.tex) hinzugefügt werden. (Mit mit Erklärung und Hinweis auf die betreffende Aufgabe).
+
+Vor einem Commit auf das remote Repository sollten die **KompilierbareVorlage.tex** zurückgesetzt werden. Pull-Requests, ohne eine orginale **KompilierbareVorlage.tex** Datei werden nicht akzeptiert.
