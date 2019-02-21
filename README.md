@@ -5,7 +5,7 @@
 
 [v0.3](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.3.zip)
 
-## Vorraussetungen
+## Voraussetungen
 
 Zum Benutzen benötigt ihr:
 
