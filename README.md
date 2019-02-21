@@ -30,4 +30,4 @@ In den *__Optionen__* kann man weitere Einstellungen treffen:
  - max. Anzahl der Subaufgaben **-** beschränkt die Anzahl der Aufgaben die von einem Subaufgabenbereich ausgewählt werden.
 
  Im unteren Bereich kann man den Ausgabepfad für das Projekt oder die Datei auswählen.
- Sollte eine entsprechende PDF schon vorhanden sein erscheint eiene Warnung und das Speichern wird deaktiviert. Der "Überschreiben Dialog", der beim Auswählen einer vorhandenen Datei erscheint, hat keinen (noch) keinen Effekt! 
+ Sollte eine entsprechende PDF schon vorhanden sein erscheint eiene Warnung und das Speichern wird deaktiviert.   Der "Überschreiben Dialog", der beim Auswählen einer vorhandenen Datei erscheint, hat keinen (noch) keinen Effekt! 
