@@ -2,6 +2,7 @@ package eti.view
 
 import eti.data.Options
 import eti.dialogues.SaveDialog
+import javafx.stage.Modality
 import tornadofx.*
 
 class MainView : View("ETI Generator"), OptionsObserver {
@@ -16,7 +17,10 @@ class MainView : View("ETI Generator"), OptionsObserver {
         action {
             val selection = boxHolder.getSelection()
             val targetFile = this.getTarget()
-            SaveDialog().startGeneration(selection, targetFile, currentOptions)
+            SaveDialog().run {
+                initModality(Modality.NONE)
+                startGeneration(selection, targetFile, currentOptions) { checkAndHandelPathExists() }
+            }
         }
     }
     val boxHolder = BoxHolder(this)

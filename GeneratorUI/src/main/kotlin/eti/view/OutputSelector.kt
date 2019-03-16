@@ -32,7 +32,7 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
             hGrow = Priority.ALWAYS
         }
         maxWidth = 500.0
-        text = targetFile.parentFile.absolutePath + File.separator //sperator is optional, just for the looks
+        text = targetFile.parentFile.absolutePath + File.separator //separator is optional, just for the looks
         textProperty().addListener(this@OutputSelector)
     }
     val fileField = textfield {
@@ -45,7 +45,7 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
             marginLeft = 20.0
         }
         visibleProperty().set(false)
-        textFill = Color.RED
+        textFill = Color.ORANGE
         font = Font("Arial", 12.0)
     }
     var botpane: BorderPane? = null
@@ -73,7 +73,7 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
                         fileChooser.initialFileName = fileField.text
                         fileChooser.extensionFilters.addAll(List(1) { pdfExtension })
                         fileChooser.selectedExtensionFilter = pdfExtension
-                        fileChooser.showSaveDialog(currentStage)
+                        fileChooser.showSaveDialog(null)
                     }
                     if (target != null) {
                         if (target.extension == "" && !currentOptions.saveLatex) target = File(target.absolutePath + ".pdf")//append .pdf extension if its missing
@@ -81,13 +81,12 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
                         //copy path sections into textFields
                         if (currentOptions.saveLatex) {
                             pathField.text = target.absolutePath
-                            targetFile = File(Paths.get(target.absolutePath, fileField.text).toUri())//copy over to local var
                         } else {
-                            targetFile = target
                             pathField.text = target.absolutePath.removeSuffix(target.name)
                             fileField.text = target.name
                         }
                     }
+                    checkAndHandelPathExists()
                 }
                 vboxConstraints { marginLeftRight(hMargin) }
             }
@@ -137,10 +136,12 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
                         "$text.pdf"
                     } else text
         }
+        checkAndHandelPathExists()
     }
 
     override fun changed(observable: ObservableValue<out String>?, oldValue: String?, newValue: String?) {
         checkAndHandelPathExists()
+        targetFile = File(Paths.get(pathField.text, fileField.text).toUri())//update target file based on changed text fields
     }
 
     fun checkAndHandelPathExists() {
@@ -148,7 +149,7 @@ class OutputSelector : View(), OptionsObserver, ChangeListener<String> {
         existsLabel.isVisible =
                 ((target.isFile && target.exists() && !currentOptions.saveLatex)
                         || (currentOptions.saveLatex && target.isDirectory && target.listFiles().any { file -> file.name == target.name + ".pdf" }))
-        botpane?.right?.isDisable = existsLabel.isVisible //disable save button
+        //botpane?.right?.isDisable = existsLabel.isVisible //disable save button , uncomment this line when overriding should be disabled
     }
 
     fun getTarget(): File {

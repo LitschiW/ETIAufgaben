@@ -8,15 +8,15 @@ import javafx.application.Platform
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
 import javafx.util.Callback
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import tornadofx.*
 import java.io.File
+import java.io.PipedInputStream
 import kotlin.concurrent.thread
 
 class SaveDialog : Dialog<Boolean>() {
     val textArea = textarea {
         isWrapText = true
+        isEditable = false
     }
 
     init {
@@ -31,30 +31,51 @@ class SaveDialog : Dialog<Boolean>() {
 
     fun startGeneration(selection: Map<Topic, List<SubTopic>>,
                         targetFile: File,
-                        options: Options) {
+                        options: Options,
+                        onFinished: (Boolean) -> Unit = {}) {
         show()
-        val gen = Generator()
+
+        val outPutStream = PipedInputStream()
+        val generationCanceled = false
         //start generator async
-        GlobalScope.launch {
-            try {
-                gen.generateDocument(
-                        selection,
-                        targetFile,
-                        options)
-            } catch (e: Exception) {
-                println(e)
-            }
+        Generator.generateDocument(
+                selection,
+                targetFile,
+                options,
+                outPutStream) {
+            //@it holds whether the generation was successful
+            Platform.runLater { dialogPane.lookupButton(ButtonType.FINISH).isDisable = false }
+            outPutStream.close()
+            onFinished(it)
+            generationCanceled != it
         }
+
         //start output listener thread
         thread {
-            val reader = gen.inputStream.bufferedReader()
-            do {
-                val s = reader.readLine()
-                if (s != null) {
-                    Platform.runLater { textArea.appendText(s + "\n") }
+            val time = System.currentTimeMillis()
+            var connected = true
+            while (outPutStream.available() == 0) {//waiting for the pipe to connect
+                if (System.currentTimeMillis() - time > 1000 || generationCanceled) { //timeout after 1s or if the generating was canceled before the pipe was connected (e.g. for argument errors)
+                    connected = false
+                    Platform.runLater {
+                        if (!generationCanceled) textArea.appendText("Output Pipe did not connect in Time!\n No output will be available")
+                        dialogPane.lookupButton(ButtonType.FINISH).isDisable = false
+                    }
+                    break
                 }
-            } while (s != null)
-            Platform.runLater { dialogPane.lookupButton(ButtonType.FINISH).isDisable = false }
+            }
+            if (connected) {
+                val reader = outPutStream.bufferedReader()
+                try {
+                    do {
+                        val s = reader.readLine()
+                        if (s != null) {
+                            Platform.runLater { textArea.appendText(s + "\n") }
+                        }
+                    } while (s != null)
+                } catch (e: Throwable) {
+                }
+            }
         }
     }
 }
