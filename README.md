@@ -1,8 +1,15 @@
-# ETI Aufgabengenerator
+# Aufgabengenerator
 
-## Downloads
+## Downloads (portable; Java8 Jre not included)
 
-[v0.3](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.3.zip) Basisversion mit UI und Generator
+[v0.4 Parallels!](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.4.zip)  
+What's new?:
+- Generieren im Hintergrund und von mehreren Pdf's gleichzeitig
+- kl. Bugfixes
+- execute Script für Unix/Mac Systeme
+- weitere Aufgaben. 
+ 
+[v0.3 (outdated)](https://github.com/LitschiW/ETIPAVorschlaege/raw/master/Releases/v0.3.zip) Basisversion mit UI und Generator
 
 ## Voraussetungen
 
@@ -51,4 +58,4 @@ Mit *\keeptogether{*[INHALT]*}* können Abschnitte des Textes gruppiert werden, 
 Der Befehl *\subsubsection{*[NAME]*}* wird ebenfalls unterstützt.
 Wenn zusätzliche packages benötigt werden sollten die unter [SetupData\usepackage.tex](SetupData\usepackage.tex) hinzugefügt werden. (Mit mit Erklärung und Hinweis auf die betreffende Aufgabe).
 
-Vor einem Commit auf das remote Repository sollten die **KompilierbareVorlage.tex** zurückgesetzt werden. Pull-Requests, ohne eine orginale **KompilierbareVorlage.tex** Datei werden nicht akzeptiert.
+Vor einem Commit auf das remote Repository sollten die **KompilierbareVorlage.tex** in ihren Orginalzustand gebracht werden. Pull-Requests, ohne eine orginale **KompilierbareVorlage.tex** Datei werden nicht akzeptiert.
