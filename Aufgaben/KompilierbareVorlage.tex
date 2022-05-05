@@ -2,9 +2,22 @@
 \input{../SetupData/usepackage}
 
 \begin{document}
-	\subsection{}%Diese Zeile bitte behalten, optional einen Titel einfügen.
-
-	%Aufgabe kommt hier her
+\keepTogether{
+	\subsection{D-Flip-Flop}
+	Zeichnen Sie ein taktgesteuertes D-Flip-Flop. Nutzen Sie D-Latches als vorhandene Bauteile:\\
+	\makeanswerbox{7}
+}
+\keepTogether{
+\begin{center}
+	Allgemeiner Hinweiß:\\
+	\begin{tabular}{|c|c|c!{\vrule width 1pt}c|}\hline
+		\multicolumn{4}{|c|}{D-FF}\\\hline
+		d&c&q&q$^+$\\\hline
+		\textbf{-}&\tikz[scale=0.09, baseline=0.5ex]{\draw[line width=1pt] (0,0) -- (1,0) -- (1,4) -- (2,4)}&\textbf{-}& d\\\hline
+		\textbf{-}&\textbf{-}&\textbf{-}& q\\\hline
+	\end{tabular}
+\end{center}
+}
 \end{document}
 %------------------------------------------------------------------------------------------------------------
 %Befehle:

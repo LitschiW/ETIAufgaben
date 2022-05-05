@@ -73,7 +73,7 @@ class Generator {
                 }
 
                 fun handelTargetFileExisting(targetFile: File): Boolean {
-                    val result = AtomicBoolean(true)
+                    val result = AtomicBoolean(true) //using atomic bool here just to be safe in regards to async behavior
                     writeOutputLine("Datei Konflikt: Die Zieldatei ist bereits vorhanden!")
                     val latch = CountDownLatch(1)
                     Platform.runLater {
@@ -97,7 +97,7 @@ class Generator {
                         latch.countDown()
                     }
                     try {
-                        latch.await()
+                        latch.await()//waiting for the dialog to return
                     } catch (e: Throwable) {
                         throw e
                     }
@@ -112,8 +112,8 @@ class Generator {
                         x = x.parentFile.parentFile
                         x = x.listFiles().find { file -> file.name == "SetupData" }!!
                     }
-                    writeOutputLine("found SetupData at ${x.absolutePath}")
-                    writeOutputLine("copy SetupData to ${setupDir.absolutePath}")
+                    writeOutputLine("SetupData in ${x.absolutePath} gefunden!")
+                    writeOutputLine("Kopiere SetupDate nach ${setupDir.absolutePath}")
                     x.copyRecursively(setupDir, true)
                     writeOutputLine("Done..")
 

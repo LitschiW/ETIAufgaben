@@ -46,4 +46,4 @@ command -v pdflatex >/dev/null 2>&1 || {
     echo
 }
 echo "Starting generator..."
-"$JAVA_EXE" -jar GeneratorUI.jar
+("$JAVA_EXE" -jar GeneratorUI.jar &)

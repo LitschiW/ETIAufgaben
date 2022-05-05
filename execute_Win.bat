@@ -1,4 +1,11 @@
 @echo off
+::===============================================================
+:: This file will look for a jre 8 installation on your system. 
+:: The search is based on your %JAVA_HOME% variable.
+:: Once found it will start the Generator.
+:: Notice, that we have to use javaw.exe to prevent a console from poping up.
+::===============================================================
+
 set JAR_TARGET=%~dp0GeneratorUI.jar
 
 if "%OS%"=="Windows_NT" setlocal
@@ -20,9 +27,10 @@ goto fail
 set JAVA_HOME=%JAVA_HOME:"=%
 
 if "%JAVA_HOME%"=="%JAVA_HOME:1.8=%" (
+	echo derp
     goto findJavaEightFromJavaHome
 )
-set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+set JAVA_EXE=%JAVA_HOME%/bin/javaw.exe
 
 if exist "%JAVA_EXE%" goto execute
 echo.
@@ -37,7 +45,7 @@ set JAVA_HOME2=%JAVA_HOME%\..\
 for /f "delims=" %%a in ('dir /ad /b "%JAVA_HOME2%*1.8*"') do @set VAR=%%a
 
 set JAVAEIGHT_HOME=%JAVA_HOME2%%VAR%
-set JAVA_EXE=%JAVAEIGHT_HOME%\bin\java.exe
+set JAVA_EXE=%JAVAEIGHT_HOME%\bin\javaw.exe 
 
 if exist "%JAVA_EXE%" goto execute
 echo.
@@ -56,7 +64,7 @@ if %ERRORLEVEL% NEQ 0 (
 	echo.
 )
 echo Starting Generator...
-"%JAVA_EXE%" -jar "%JAR_TARGET%"
+start "" "%JAVA_EXE%" -jar "%JAR_TARGET%"
 goto mainEnd
 
 :fail
